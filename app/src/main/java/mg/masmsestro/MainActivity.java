@@ -8,8 +8,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    private String[] FolderList={"General","Family","SPAM"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,6 +26,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
+        ArrayAdapter a=new ArrayAdapter<String>(
+                getApplicationContext(),
+                R.layout.my_list_item1,FolderList
+        );
+         SMSFolders.setAdapter(a);
+
+         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
+             @Override
+             public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
+                 Toast.makeText(getApplicationContext(),FolderList[pos],2).show();
+
+             }
+         });
+
 
         FloatingActionButton NewSMS = (FloatingActionButton) findViewById(R.id. NewSMS);
         NewSMS.setOnClickListener(new View.OnClickListener() {

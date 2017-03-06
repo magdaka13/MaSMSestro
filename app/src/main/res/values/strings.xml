@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">" MaSMSestro"</string>
+    <string name="app_name" translatable="false">" MaSMSestro"</string>
+    <string name="action_search">Search</string>
+    <string name="action_new_folder">New Folder</string>
+    <string name="action_delete">Delete conversation</string>
     <string name="action_settings">Settings</string>
+
 </resources>

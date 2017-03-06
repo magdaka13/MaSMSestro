@@ -10,19 +10,14 @@
 
 
     <ListView
-        android:layout_width="356dp"
-        android:layout_height="453dp"
-        tools:layout_editor_absoluteX="20dp"
-        tools:layout_editor_absoluteY="96dp" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=" MG test"
-
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp" />
+        android:id="@+id/SMSFolderList"
+        style="@style/Widget.AppCompat.ListView.Menu"
+        android:layout_width="368dp"
+        android:layout_height="551dp"
+        android:scrollbars="horizontal"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>
