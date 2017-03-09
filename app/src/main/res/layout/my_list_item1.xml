@@ -3,6 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/colorButtonNormal"
-    android:textColor="?android:attr/colorActivatedHighlight"
+    android:background="@color/colorPrimary"
+    android:textColor="@color/colorWhite"
     android:textSize="20sp" />
