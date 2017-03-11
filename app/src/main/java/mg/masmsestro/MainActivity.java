@@ -14,10 +14,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import mg.masmsestro.DBHelper;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private String[] FolderList={"General","Family","SPAM"};
+    ArrayList<String> FolderList=new ArrayList<String>();
+
 
 
     @Override
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+
         ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
         ArrayAdapter a=new ArrayAdapter<String>(
                 getApplicationContext(),
@@ -34,10 +38,22 @@ public class MainActivity extends AppCompatActivity {
         );
          SMSFolders.setAdapter(a);
 
+
+        DBHelper dbHelper=new DBHelper(getApplicationContext());
+        int no=dbHelper.numberOfRows();
+
+        if  (no==0)
+        {
+          dbHelper.insertFolder( "General");
+            dbHelper.insertFolder( "SPAM");
+        }
+
+        FolderList = dbHelper.getAllFolders();
+
          SMSFolders.setOnItemClickListener(new OnItemClickListener() {
              @Override
              public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                 Toast.makeText(getApplicationContext(),FolderList[pos],2).show();
+                 Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
 
              }
          });
