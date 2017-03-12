@@ -28,13 +28,17 @@ public class SMSActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        setTitle( " MaSMSestro->"+message);
+
         setContentView(R.layout.sms_list_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
 
         Log.e ("MaSMSestro","created new activity SMS->"+message);
 /*
