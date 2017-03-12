@@ -21,6 +21,7 @@ import mg.masmsestro.DBHelper;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+    public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     ArrayList<String> FolderList=new ArrayList<String>();
 
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
                       Log.e  ("MaSMSestro","inside");
                      Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos) );
                            startActivity(intent);
                  }
              }

@@ -1,5 +1,6 @@
 package mg.masmsestro;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -31,7 +32,11 @@ public class SMSActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
-         Log.e ("MaSMSestro","created new activity SMS");
+        // Get the Intent that started this activity and extract the string
+        Intent intent = getIntent();
+        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        Log.e ("MaSMSestro","created new activity SMS->"+message);
 /*
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
