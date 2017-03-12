@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="mg.masmsestro.SMSActivity"
+    tools:showIn="@layout/sms_list_layout">
+
+
+    <ListView
+        android:id="@+id/SMSList"
+        style="@style/Widget.AppCompat.ListView.Menu"
+        android:layout_width="368dp"
+        android:layout_height="551dp"
+        android:scrollbars="horizontal"
+        android:visibility="visible"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="8dp" />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -1,6 +1,5 @@
 package mg.masmsestro;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,18 +19,20 @@ import mg.masmsestro.DBHelper;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
-    ArrayList<String> FolderList=new ArrayList<String>();
+public class SMSActivity extends AppCompatActivity {
+    ArrayList<String> SMSList=new ArrayList<String>();
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.sms_list_layout);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
+         Log.e ("MaSMSestro","created new activity SMS");
+/*
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
         Integer no=dbHelper.numberOfRows();
@@ -45,39 +46,39 @@ public class MainActivity extends AppCompatActivity {
 
         FolderList = dbHelper.getAllFolders();
 
-        ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
+        ListView SMSItems=(ListView) findViewById(R.id.SMSList);
         ArrayAdapter a=new ArrayAdapter<String>(
                 getApplicationContext(),
                 R.layout.my_list_item1,FolderList
         );
-         SMSFolders.setAdapter(a);
+        SMSFolders.setAdapter(a);
 
 
 
 
-         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
-             @Override
-             public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                 Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
+        SMSFolders.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
+                Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
 
-                 Log.e  ("MaSMSestro",FolderList.get(pos));
+            }
+        });
+*/
 
-                 if (FolderList.get(pos).equals("General"))
-                 {
-
-                      Log.e  ("MaSMSestro","inside");
-                     Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
-                           startActivity(intent);
-                 }
-             }
-         });
-
+        FloatingActionButton NewSMS = (FloatingActionButton) findViewById(R.id. NewSMS);
+        NewSMS.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, " New  SMS will be created here", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_sms, menu);
         return true;
     }
 
