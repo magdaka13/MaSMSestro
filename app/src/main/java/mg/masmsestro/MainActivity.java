@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
+/*
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
         Integer no=dbHelper.numberOfRows();
@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FolderList = dbHelper.getAllFolders();
+*/
 
         ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
         ArrayAdapter a=new ArrayAdapter<String>(
