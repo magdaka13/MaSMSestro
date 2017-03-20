@@ -16,13 +16,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import mg.masmsestro.DBHelper;
+//import mg.masmsestro.DBHelper;
 
 import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    ArrayList<String> FolderList=new ArrayList<String>();
+    List<Folder> FolderList=new ArrayList<Folder>();
 
 
 
@@ -32,23 +34,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-/*
+
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
-        Integer no=dbHelper.numberOfRows();
+        Integer no=dbHelper.numberOfRowsFolder();
         Log.e("MaSMSestro",no.toString() );
 
         if  (no==0)
         {
-            dbHelper.insertFolder( "General");
-            dbHelper.insertFolder( "SPAM");
+            Folder f=new Folder();
+            f.setName("Incoming");
+            dbHelper.insertFolder( f);
+
+            f.setName("SPAM");
+            dbHelper.insertFolder( f);
         }
 
         FolderList = dbHelper.getAllFolders();
-*/
+
 
         ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a=new ArrayAdapter<String>(
+        ArrayAdapter a=new ArrayAdapter<Folder>(
                 getApplicationContext(),
                 R.layout.my_list_item1,FolderList
         );
@@ -60,16 +66,16 @@ public class MainActivity extends AppCompatActivity {
          SMSFolders.setOnItemClickListener(new OnItemClickListener() {
              @Override
              public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                 Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
+                 Toast.makeText(getApplicationContext(),FolderList.get(pos).getName(), Toast.LENGTH_LONG).show();
 
-                 Log.e  ("MaSMSestro",FolderList.get(pos));
+                 Log.e  ("MaSMSestro",FolderList.get(pos).getName());
 
-                 if (FolderList.get(pos).equals("General"))
+                 if (FolderList.get(pos).getName().equals("General"))
                  {
 
                       Log.e  ("MaSMSestro","inside");
                      Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
-                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos) );
+                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos).getName() );
                            startActivity(intent);
                  }
              }
