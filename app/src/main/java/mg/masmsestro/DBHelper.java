@@ -24,7 +24,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // TODO Auto-generated method stub
         db.execSQL("create table if not exists folder (id integer primary key, name text)");
         db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text)");
         db.execSQL("create table if not exists rule (id_rule integer primary key, rule text,id_folder integer)");
@@ -35,7 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO Auto-generated method stub
+
         db.execSQL("DROP TABLE IF EXISTS folders");
         db.execSQL("DROP TABLE IF EXISTS sms");
         db.execSQL("DROP TABLE IF EXISTS rule");
@@ -88,7 +87,8 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete("folder","id = ? ",new String[] { Integer.toString(f.getId()) });
     }
 
-    public List<Folder> getAllFolders() {
+     public List<Folder> getAllFolders() {
+
         List<Folder> folder_list = new ArrayList<Folder>();
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -104,7 +104,29 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return folder_list;
     }
-/* Folder table-end */
+
+    public List<String> getAllFoldersNames() {
+
+        List<String> folder_list = new ArrayList<String>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select name from folder", null );
+        res.moveToFirst();
+
+        while(res.isAfterLast() == false){
+
+            //Folder f=new Folder();
+            //f.setId(res.getInt(res.getColumnIndex("id")));
+            //f.setName(res.getString(res.getColumnIndex("name")));
+
+            folder_list.add(res.getString(res.getColumnIndex("name")));
+
+            res.moveToNext();
+        }
+        return folder_list;
+    }
+
+    /* Folder table-end */
 
 /* SMS table */
 

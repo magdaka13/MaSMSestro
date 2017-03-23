@@ -20,7 +20,14 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <include
+        android:id="@+id/folder_list"
+        layout="@layout/content_main" />
+
+    <include
+        android:id="@+id/folder_options_layout"
+        layout="@layout/folder_options"
+        android:visibility="invisible" />
 
 
 </android.support.design.widget.CoordinatorLayout>

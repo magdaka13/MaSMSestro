@@ -2,6 +2,7 @@ package mg.masmsestro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +14,9 @@ import android.view.MenuItem;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 //import mg.masmsestro.DBHelper;
@@ -24,7 +27,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    List<Folder> FolderList=new ArrayList<Folder>();
+    List<String> FolderList=new ArrayList<String>();
+
 
 
 
@@ -50,11 +54,11 @@ public class MainActivity extends AppCompatActivity {
             dbHelper.insertFolder( f);
         }
 
-        FolderList = dbHelper.getAllFolders();
+        FolderList = dbHelper.getAllFoldersNames();
 
 
         ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a=new ArrayAdapter<Folder>(
+        ArrayAdapter a=new ArrayAdapter<String>(
                 getApplicationContext(),
                 R.layout.my_list_item1,FolderList
         );
@@ -66,16 +70,15 @@ public class MainActivity extends AppCompatActivity {
          SMSFolders.setOnItemClickListener(new OnItemClickListener() {
              @Override
              public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                 Toast.makeText(getApplicationContext(),FolderList.get(pos).getName(), Toast.LENGTH_LONG).show();
+                 Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
 
-                 Log.e  ("MaSMSestro",FolderList.get(pos).getName());
+                 Log.e  ("MaSMSestro",FolderList.get(pos));
 
-                 if (FolderList.get(pos).getName().equals("General"))
+                 if (FolderList.get(pos).equals("Incoming"))
                  {
 
-                      Log.e  ("MaSMSestro","inside");
                      Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
-                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos).getName() );
+                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos) );
                            startActivity(intent);
                  }
              }
@@ -98,7 +101,21 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_new_folder) {
+            Log.e  ("MaSMSestro","New folder");
+
+            findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
+
+            Button btn_Save= (Button) findViewById(R.id.btn_Save);
+            btn_Save.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                Toast.makeText(getApplicationContext(), "Save was pressed", Toast.LENGTH_LONG).show();
+                                            }
+
+                                        }
+                 );
+
             return true;
         }
 
