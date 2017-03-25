@@ -1,6 +1,7 @@
 package mg.masmsestro;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -15,9 +16,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckedTextView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.database.Cursor;
 
 //import mg.masmsestro.DBHelper;
 
@@ -28,7 +32,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
     List<String> FolderList=new ArrayList<String>();
-
+    private   DBHelper dbHelper;
 
 
 
@@ -39,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DBHelper dbHelper=new DBHelper(getApplicationContext());
+          dbHelper=new DBHelper(getApplicationContext());
 
         Integer no=dbHelper.numberOfRowsFolder();
         Log.e("MaSMSestro",no.toString() );
@@ -77,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
                  if (FolderList.get(pos).equals("Incoming"))
                  {
 
-                     Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                      Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
                      intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos) );
                            startActivity(intent);
                  }
@@ -85,6 +89,23 @@ public class MainActivity extends AppCompatActivity {
          });
 
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FolderList = dbHelper.getAllFoldersNames();
+
+
+        ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
+        ArrayAdapter a=new ArrayAdapter<String>(
+                getApplicationContext(),
+                R.layout.my_list_item1,FolderList
+        );
+        SMSFolders.setAdapter(a);
+
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -101,24 +122,55 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_new_folder) {
-            Log.e  ("MaSMSestro","New folder");
+       if (id == R.id.action_new_folder) {
+            // Log.e  ("MaSMSestro","New folder");
 
-            findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
+             findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
 
             Button btn_Save= (Button) findViewById(R.id.btn_Save);
             btn_Save.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                Toast.makeText(getApplicationContext(), "Save was pressed", Toast.LENGTH_LONG).show();
-                                            }
+                                                   EditText editText=( EditText) findViewById(R.id.edtFolderName);
+                                                   String s= (String) editText.getText().toString();
+                                                if  (! s.isEmpty() )
+                                                {
+                                                   Folder f =new Folder();
+                                                    f.setName(s);
 
-                                        }
+                                                    dbHelper.insertFolder(f);
+                                                    findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
+
+                                                    Intent intent = new Intent(getApplicationContext(),  MainActivity.class);
+                                                    startActivity(intent);
+                                                }
+
+                                         }
+                               }
                  );
 
             return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        if (id == R.id.action_edit_folder) {
+
+     //        ListView l= ( ListView) findViewById(R.id.SMSFolderList);
+       //     l.setChoiceMode( ListView.CHOICE_MODE_SINGLE );
+         //     CheckedTextView t= (  CheckedTextView) findViewById( R.id.list_item );
+          //  t.setCheckMarkDrawable(android.R.attr.listChoiceIndicatorSingle);
+
+
+
+            Intent intent = new Intent(getApplicationContext(),   EditFolder.class);
+            startActivity(intent);
+
+            //findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
+            //EditText editText=( EditText) findViewById(R.id.edtFolderName);
+            //String s= (String) editText.getText().toString();
+        }
+
+            return super.onOptionsItemSelected(item);
     }
+
+
 }

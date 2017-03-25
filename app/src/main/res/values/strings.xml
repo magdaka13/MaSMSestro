@@ -11,4 +11,5 @@
     <string name="action_create_rule">Create filtering rule</string>
 
     <string name="action_settings">User settings</string>
+    <string name="title_activity_edit_folder">EditFolder</string>
 </resources>
