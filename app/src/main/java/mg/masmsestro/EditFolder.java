@@ -76,16 +76,16 @@ public class EditFolder extends AppCompatActivity {
                                                             throw new RuntimeException(e.toString());
                                                         }
 
-                                                 //       Folder f =new Folder();
-//f.setId(  ( Integer) FolderId);
-                                                   //     f.setName(s);
+                                                        Folder f =new Folder();
+f.setId(  ( Integer) FolderId);
+                                                        f.setName(s);
 
-                                                        // Integer co= dbHelper.updateFolder(f);
+                                                         Integer co= dbHelper.updateFolder(f);
                                                         Toast.makeText(getApplicationContext(),"na- >"+ name, Toast.LENGTH_LONG).show();
-                                                        //findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
+                                                        findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
 
-                                                        //Intent intent = new Intent(getApplicationContext(),  MainActivity.class);
-                                                    //    startActivity(intent);
+                                                        Intent intent = new Intent(getApplicationContext(),  MainActivity.class);
+                                                        startActivity(intent);
                                                     }
 
                                                 }
