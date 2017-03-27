@@ -19,4 +19,9 @@
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="56dp" />
 
+    <include
+        android:id="@+id/folder_options_layout"
+        layout="@layout/folder_options"
+        android:visibility="invisible" />
+
   </android.support.constraint.ConstraintLayout>

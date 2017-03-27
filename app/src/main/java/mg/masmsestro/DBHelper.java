@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return id;
     }
 
-    public Folder getFolder(Folder f) {
+    public Folder getFolderById(Folder f) {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res =  db.rawQuery( "select * from folder where id="+f.getId()+"", null );
@@ -67,6 +67,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return folderObj;
     }
+    public int getFolderByName(String name) {
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res =  db.rawQuery( "select id from folder where name='"+name+"'", null );
+        if(res != null && res.moveToFirst()) {
+
+        return   Integer.parseInt(res.getString(res.getColumnIndex("id")));
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+
 
     public int numberOfRowsFolder(){
         SQLiteDatabase db = this.getReadableDatabase();

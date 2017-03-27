@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
              public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
                  Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
 
-                 Log.e  ("MaSMSestro",FolderList.get(pos));
+                 Log.e   ("MaSMSestro",FolderList.get(pos));
 
                  if (FolderList.get(pos).equals("Incoming"))
                  {
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
        if (id == R.id.action_new_folder) {
             // Log.e  ("MaSMSestro","New folder");
 
-             findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
+              findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
 
             Button btn_Save= (Button) findViewById(R.id.btn_Save);
             btn_Save.setOnClickListener(new View.OnClickListener() {
