@@ -31,9 +31,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    List<String> FolderList=new ArrayList<String>();
-    private   DBHelper dbHelper;
-
+    List<String> FolderList = new ArrayList<String>();
+    private DBHelper dbHelper;
 
 
     @Override
@@ -43,50 +42,46 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-          dbHelper=new DBHelper(getApplicationContext());
+        dbHelper = new DBHelper(getApplicationContext());
 
-        Integer no=dbHelper.numberOfRowsFolder();
-        Log.e("MaSMSestro",no.toString() );
+        Integer no = dbHelper.numberOfRowsFolder();
+        Log.e("MaSMSestro", no.toString());
 
-        if  (no==0)
-        {
-            Folder f=new Folder();
+        if (no == 0) {
+            Folder f = new Folder();
             f.setName("Incoming");
-            dbHelper.insertFolder( f);
+            dbHelper.insertFolder(f);
 
             f.setName("SPAM");
-            dbHelper.insertFolder( f);
+            dbHelper.insertFolder(f);
         }
 
         FolderList = dbHelper.getAllFoldersNames();
 
 
-        ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a=new ArrayAdapter<String>(
+        ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
+        ArrayAdapter a = new ArrayAdapter<String>(
                 getApplicationContext(),
-                R.layout.my_list_item1,FolderList
+                R.layout.my_list_item1, FolderList
         );
-         SMSFolders.setAdapter(a);
+        SMSFolders.setAdapter(a);
 
 
+        SMSFolders.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+                Toast.makeText(getApplicationContext(), FolderList.get(pos), Toast.LENGTH_LONG).show();
 
+                Log.e("MaSMSestro", FolderList.get(pos));
 
-         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
-             @Override
-             public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                 Toast.makeText(getApplicationContext(),FolderList.get(pos), Toast.LENGTH_LONG).show();
+                if (FolderList.get(pos).equals("Incoming")) {
 
-                 Log.e   ("MaSMSestro",FolderList.get(pos));
-
-                 if (FolderList.get(pos).equals("Incoming"))
-                 {
-
-                      Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
-                     intent.putExtra(EXTRA_MESSAGE,FolderList.get(pos) );
-                           startActivity(intent);
-                 }
-             }
-         });
+                    Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, FolderList.get(pos));
+                    startActivity(intent);
+                }
+            }
+        });
 
     }
 
@@ -96,10 +91,10 @@ public class MainActivity extends AppCompatActivity {
         FolderList = dbHelper.getAllFoldersNames();
 
 
-        ListView SMSFolders=(ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a=new ArrayAdapter<String>(
+        ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
+        ArrayAdapter a = new ArrayAdapter<String>(
                 getApplicationContext(),
-                R.layout.my_list_item1,FolderList
+                R.layout.my_list_item1, FolderList
         );
         SMSFolders.setAdapter(a);
 
@@ -116,60 +111,71 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-       if (id == R.id.action_new_folder) {
-            // Log.e  ("MaSMSestro","New folder");
+        if (id == R.id.action_new_folder) {
 
-              findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
+            findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
 
-            Button btn_Save= (Button) findViewById(R.id.btn_Save);
+            Button btn_Save = (Button) findViewById(R.id.btn_Save);
             btn_Save.setOnClickListener(new View.OnClickListener() {
                                             @Override
                                             public void onClick(View view) {
-                                                   EditText editText=( EditText) findViewById(R.id.edtFolderName);
-                                                   String s= (String) editText.getText().toString();
-                                                if  (! s.isEmpty() )
-                                                {
-                                                   Folder f =new Folder();
-                                                    f.setName(s);
+                                                EditText editText = (EditText) findViewById(R.id.edtFolderName);
+                                                String s = (String) editText.getText().toString();
+                                                if (!s.isEmpty()) {
+                                                    //let's check whether folder with the same name exists in DB
+                                                    if (dbHelper.getFolderByName(s) == -1) {
+                                                        Folder f = new Folder();
+                                                        f.setName(s);
 
-                                                    dbHelper.insertFolder(f);
-                                                    findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
+                                                        dbHelper.insertFolder(f);
+                                                        findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
 
-                                                    Intent intent = new Intent(getApplicationContext(),  MainActivity.class);
-                                                    startActivity(intent);
+                                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                                        startActivity(intent);
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(), "Folder cannot be created - already exists.", Toast.LENGTH_LONG).show();
+
+                                                    }
                                                 }
 
-                                         }
-                               }
-                 );
+                                            }
+                                        }
+            );
+
+
+            Button btn_Cancel = (Button) findViewById(R.id.btn_Cancel);
+            btn_Cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
+
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+
+                }
+            });
 
             return true;
         }
 
         if (id == R.id.action_edit_folder) {
 
-     //        ListView l= ( ListView) findViewById(R.id.SMSFolderList);
-       //     l.setChoiceMode( ListView.CHOICE_MODE_SINGLE );
-         //     CheckedTextView t= (  CheckedTextView) findViewById( R.id.list_item );
-          //  t.setCheckMarkDrawable(android.R.attr.listChoiceIndicatorSingle);
-
-
-
-            Intent intent = new Intent(getApplicationContext(),   EditFolder.class);
+            Intent intent = new Intent(getApplicationContext(), EditFolder.class);
             startActivity(intent);
 
-            //findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
-            //EditText editText=( EditText) findViewById(R.id.edtFolderName);
-            //String s= (String) editText.getText().toString();
         }
 
-            return super.onOptionsItemSelected(item);
+        if (id == R.id.action_delete_folder) {
+
+            Intent intent = new Intent(getApplicationContext(), DeleteFolder.class);
+            startActivity(intent);
+
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

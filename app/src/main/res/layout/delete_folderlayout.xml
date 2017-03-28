@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="mg.masmsestro.DeleteFolder">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="96dp">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbarFolderDelete"
+                android:layout_width="200dp"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:title="Delete Folder" />
+
+            <CheckBox
+                android:id="@+id/chkboxSelectAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_below="@+id/toolbarFolderDelete"
+                android:layout_weight="533.00"
+                android:paddingLeft="0dp"
+                android:saveEnabled="false"
+                android:text="@android:string/selectAll"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+            <ImageButton
+                android:id="@+id/totrash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/chkboxSelectAll"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/ic_launcher" />
+
+        </RelativeLayout>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <include
+        android:id="@+id/folder_list_delete"
+        layout="@layout/contentfolder_delete"
+
+
+        android:layout_height="515dp" />
+
+
+</android.support.design.widget.CoordinatorLayout>

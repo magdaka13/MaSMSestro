@@ -26,10 +26,10 @@
         android:title="@string/action_delete_folder"
         app:showAsAction="never" />
 
-     <item
+    <item
         android:id="@+id/action_settings"
         android:orderInCategory="104"
-        android:title= "User settings"
+        android:title="User settings"
         app:showAsAction="never" />
 
 

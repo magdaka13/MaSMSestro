@@ -21,8 +21,7 @@ import mg.masmsestro.DBHelper;
 import java.util.ArrayList;
 
 public class SMSActivity extends AppCompatActivity {
-    ArrayList<String> SMSList=new ArrayList<String>();
-
+    ArrayList<String> SMSList = new ArrayList<String>();
 
 
     @Override
@@ -32,15 +31,14 @@ public class SMSActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        setTitle( " MaSMSestro->"+message);
+        setTitle(" MaSMSestro->" + message);
 
         setContentView(R.layout.sms_list_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
 
-
-        Log.e ("MaSMSestro","created new activity SMS->"+message);
+        Log.e("MaSMSestro", "created new activity SMS->" + message);
 /*
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
@@ -74,7 +72,7 @@ public class SMSActivity extends AppCompatActivity {
         });
 */
 
-        FloatingActionButton NewSMS = (FloatingActionButton) findViewById(R.id. NewSMS);
+        FloatingActionButton NewSMS = (FloatingActionButton) findViewById(R.id.NewSMS);
         NewSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

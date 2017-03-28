@@ -5,9 +5,9 @@ package mg.masmsestro;
  */
 
 public class Settings {
-  private Integer id_setting;
-  private String name;
-  private String value;
+    private Integer id_setting;
+    private String name;
+    private String value;
 
     public Integer getId_setting() {
         return id_setting;
