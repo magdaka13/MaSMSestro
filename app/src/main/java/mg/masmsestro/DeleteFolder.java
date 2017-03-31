@@ -1,38 +1,35 @@
 package mg.masmsestro;
 
 import android.app.Dialog;
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
-import android.app.Activity;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
-import android.widget.EditText;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.CompoundButton;
-
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.View.*;
+import static android.view.View.OnClickListener;
 
 public class DeleteFolder extends AppCompatActivity {
+    final Context context = this;
     private DBHelper dbHelper;
-    List<String> FolderList = new ArrayList<>();
+    private List<String> FolderList = new ArrayList<>();
+    private List<String> entries = new ArrayList<>();
     private String name;
     private Boolean checked;
-    ListView SMSFolders;
+    private ListView SMSFolders, DeleteChoiceList;
+    private List<Dialog> dialogs = new ArrayList<>();
+    private int i, j;
+    private Folder f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +38,7 @@ public class DeleteFolder extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolderDelete);
         setSupportActionBar(toolbar);
+
 
         dbHelper = new DBHelper(getApplicationContext());
         FolderList = dbHelper.getAllFoldersNames();
@@ -67,7 +65,7 @@ public class DeleteFolder extends AppCompatActivity {
                     checked = false;
                 }
 
-                for (int i = 0; i < SMSFolders.getCount(); i++)
+                for (i = 0; i < SMSFolders.getCount(); i++)
 
                 {
                     SMSFolders.setItemChecked(i, checked);
@@ -80,101 +78,65 @@ public class DeleteFolder extends AppCompatActivity {
         toTrash.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < SMSFolders.getCount(); i++) {
+                for (i = 0; i < SMSFolders.getCount(); i++) {
                     if (SMSFolders.isItemChecked(i)) {
-                        Folder f = new Folder();
 
-                        String item;
-                        try {
-                            item = (String) SMSFolders.getItemAtPosition(i);
-
-                        } catch (Exception e) {
-                            throw (e);
-                        }
-
+                        f = new Folder();
+                        String  item = (String) SMSFolders.getItemAtPosition(i);
                         f.setName(item);
-                        // dbHelper.deleteFolder(f);
-                        Toast.makeText(getApplicationContext(), "name " + f.getName(), Toast.LENGTH_LONG).show();
-                        // AlertDialog.Builder d=new AlertDialog.Builder(getApplicationContext());
-                        //d.setTitle("Folder: "+f.getName()+" will be deleted");
-                        //d.s
+
+
+                        j = i;
+                        dialogs.add(j, (new Dialog(context))); // Context, this, etc.
+                        dialogs.get(j).setContentView(R.layout.delete_dialog);
+                        dialogs.get(j).setTitle(getString(R.string.dialog_title) + " " + f.getName());
+                        dialogs.get(j).setCancelable(true);
+                        dialogs.get(j).show();
+
+
+                        Button btnCancel = (Button) dialogs.get(j).findViewById(R.id.dialog_cancel);
+                        // if button is clicked, close the custom dialog
+                        btnCancel.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                dialogs.get(j).cancel();
+                                Toast.makeText(getApplicationContext(), "cancel " + f.getName(), Toast.LENGTH_LONG).show();
+                                j = j - 1;
+                            }
+                        });
+
+                        Button btnDelete = (Button) dialogs.get(j).findViewById(R.id.dialog_delete);
+                        // if button is clicked, close the custom dialog
+                        btnDelete.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getApplicationContext(), "delete all", Toast.LENGTH_LONG).show();
+                                dialogs.get(j).cancel();
+                                // dbHelper.deleteFolder(f);
+
+                                j = j - 1;
+                            }
+                        });
+
+                        Button btnMove = (Button) dialogs.get(j).findViewById(R.id.dialog_move);
+                        // if button is clicked, close the custom dialog
+                        btnMove.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Toast.makeText(getApplicationContext(), "move all", Toast.LENGTH_LONG).show();
+                                dialogs.get(j).cancel();
+                                //dbHelper.MoveSMSToIncoming(f);
+                                // dbHelper.deleteFolder(f);
+                                j = j - 1;
+                            }
+                        });
+
                     }
                 }
             }
         });
 
-        /*
-        SMSFolders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick( AdapterView<?> p, View v,int pos,long id) {
-                name=FolderList.get(pos);
-
-                if (!(name.toUpperCase().equals("SPAM") || name.toLowerCase().equals("incoming")))
-                {
-                    findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
-
-
-                    EditText title = (EditText) findViewById(R.id.title_top);
-                    title.setText("Edit Folder");
-
-                    EditText edt = (EditText) findViewById(R.id.edtFolderName);
-                    edt.setText(name);
-
-
-                    Button btn_Save = (Button) findViewById(R.id.btn_Save);
-                    btn_Save.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            EditText editText = (EditText) findViewById(R.id.edtFolderName);
-                            String s = (String) editText.getText().toString();
-
-                            //add ommitting spam and incoming
-                            if (!s.isEmpty()) {
-
-                                if (dbHelper.getFolderByName(s)==-1) {
-                                    int FolderId;
-
-                                    FolderId = dbHelper.getFolderByName(name);
-
-                                    Folder f = new Folder();
-                                    f.setId((Integer) FolderId);
-                                    f.setName(s);
-
-                                    Integer co = dbHelper.updateFolder(f);
-                                    findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
-
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                }
-                                else
-                                {
-                                    Toast.makeText(getApplicationContext(), "Folder with this name already exists", Toast.LENGTH_LONG).show();
-
-                                }
-                            }
-
-                        }
-                    });
-                }
-                else
-                {
-                    Toast.makeText(getApplicationContext(), "This folder cannot be renamed", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        Button btn_Cancel= (Button) findViewById(R.id.btn_Cancel);
-        btn_Cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
-
-                Intent intent = new Intent(getApplicationContext(), EditFolder.class);
-                startActivity(intent);
-
-            }
-        });
-*/
     }
 
 }
