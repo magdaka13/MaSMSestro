@@ -2,15 +2,12 @@ package mg.masmsestro;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -20,7 +17,7 @@ import java.util.List;
 
 public class EditFolder extends AppCompatActivity {
     private DBHelper dbHelper;
-    List<String> FolderList = new ArrayList<>();
+    private List<String> FolderList = new ArrayList<>();
     private String name;
 
     @Override
@@ -52,7 +49,7 @@ public class EditFolder extends AppCompatActivity {
 
 
                     EditText title = (EditText) findViewById(R.id.title_top);
-                    title.setText("Edit Folder");
+                    title.setText(R.string.edit_folder);
 
                     EditText edt = (EditText) findViewById(R.id.edtFolderName);
                     edt.setText(name);
@@ -63,7 +60,7 @@ public class EditFolder extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             EditText editText = (EditText) findViewById(R.id.edtFolderName);
-                            String s = (String) editText.getText().toString();
+                            String s = editText.getText().toString();
 
                             //add ommitting spam and incoming
                             if (!s.isEmpty()) {
@@ -74,10 +71,10 @@ public class EditFolder extends AppCompatActivity {
                                     FolderId = dbHelper.getFolderByName(name);
 
                                     Folder f = new Folder();
-                                    f.setId((Integer) FolderId);
+                                    f.setId(FolderId);
                                     f.setName(s);
 
-                                    Integer co = dbHelper.updateFolder(f);
+                                    dbHelper.updateFolder(f);
                                     findViewById(R.id.folder_options_layout).setVisibility(View.GONE);
 
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);

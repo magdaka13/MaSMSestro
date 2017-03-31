@@ -11,9 +11,9 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
 
-public class DBHelper extends SQLiteOpenHelper {
+class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "SMSDB.db";
+    private static final String DATABASE_NAME = "SMSDB.db";
 
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -48,9 +48,9 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("name", f.getName());
-        long id = db.insert("folder", null, contentValues);
+        return  db.insert("folder", null, contentValues);
 
-        return id;
+
     }
 
     public Folder getFolderById(Folder f) {
@@ -62,6 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
         folderObj.setId(res.getInt(res.getColumnIndex("id")));
         folderObj.setName(res.getString(res.getColumnIndex("name")));
 
+        res.close();
         return folderObj;
     }
 
@@ -70,18 +71,20 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select id from folder where name='" + name + "'", null);
         if (res != null && res.moveToFirst()) {
-
+            res.close();
             return Integer.parseInt(res.getString(res.getColumnIndex("id")));
         } else {
+
             return -1;
         }
+
     }
 
 
     public int numberOfRowsFolder() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, "folder");
-        return numRows;
+        return  (int) DatabaseUtils.queryNumEntries(db, "folder");
+
     }
 
     public int updateFolder(Folder f) {
@@ -99,40 +102,39 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public List<Folder> getAllFolders() {
 
-        List<Folder> folder_list = new ArrayList<Folder>();
+        List<Folder> folder_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from folder", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             Folder f = new Folder();
             f.setId(res.getInt(res.getColumnIndex("id")));
             f.setName(res.getString(res.getColumnIndex("name")));
             folder_list.add(f);
             res.moveToNext();
         }
+
+        res.close();
         return folder_list;
     }
 
     public List<String> getAllFoldersNames() {
 
-        List<String> folder_list = new ArrayList<String>();
+        List<String> folder_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select name from folder", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
-
-            //Folder f=new Folder();
-            //f.setId(res.getInt(res.getColumnIndex("id")));
-            //f.setName(res.getString(res.getColumnIndex("name")));
+        while (!res.isAfterLast()) {
 
             folder_list.add(res.getString(res.getColumnIndex("name")));
 
             res.moveToNext();
         }
+        res.close();
         return folder_list;
     }
 
@@ -146,9 +148,8 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("tel_no", s.getTel_no());
         contentValues.put("content", s.getContent());
-        long id = db.insert("sms", null, contentValues);
 
-        return id;
+        return db.insert("sms", null, contentValues);
     }
 
     public SMS getSMS(SMS s) {
@@ -161,13 +162,13 @@ public class DBHelper extends SQLiteOpenHelper {
         smsObj.setTel_no(res.getString(res.getColumnIndex("tel_no")));
         smsObj.setContent(res.getString(res.getColumnIndex("content")));
 
+        res.close();
         return smsObj;
     }
 
     public int numberOfRowsSMS() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, "sms");
-        return numRows;
+        return (int) DatabaseUtils.queryNumEntries(db, "sms");
     }
 
     public int updateSMS(SMS s) {
@@ -184,14 +185,30 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.delete("sms", "id = ? ", new String[]{Integer.toString(s.getSms_id())});
     }
 
+    public Cursor deleteAllSMS(Folder f) {
+        Cursor c;
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.rawQuery("delete from sms where sms_id in (select id_SMS from smsReffolder where id_folder="+f.getId()+")",null);
+        c=db.rawQuery("delete from smsReffolder where id_folder="+f.getId(),null);
+        return c;
+    }
+
+    public Cursor moveSMSToIncoming(Folder f) {
+        Cursor c;
+        SQLiteDatabase db = this.getWritableDatabase();
+        c=db.rawQuery("update smsReffolder set id_folder="+getFolderByName("Incoming")+" where id_folder="+f.getId(),null);
+        return c;
+    }
+
+
     public List<SMS> getAllSMS() {
-        List<SMS> sms_list = new ArrayList<SMS>();
+        List<SMS> sms_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from sms", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             SMS s = new SMS();
             s.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
             s.setContent(res.getString(res.getColumnIndex("content")));
@@ -199,6 +216,7 @@ public class DBHelper extends SQLiteOpenHelper {
             sms_list.add(s);
             res.moveToNext();
         }
+        res.close();
         return sms_list;
     }
 /* SMS table-end */
@@ -211,9 +229,8 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("rule", r.getRule());
         contentValues.put("folder_id", r.getFolder_id());
-        long id = db.insert("rule", null, contentValues);
 
-        return id;
+        return db.insert("rule", null, contentValues);
     }
 
     public Rule getRule(Rule r) {
@@ -226,13 +243,13 @@ public class DBHelper extends SQLiteOpenHelper {
         ruleObj.setRule(res.getString(res.getColumnIndex("rule")));
         ruleObj.setFolder_id(res.getInt(res.getColumnIndex("folder_id")));
 
+        res.close();
         return ruleObj;
     }
 
     public int numberOfRowsRule() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, "rule");
-        return numRows;
+        return (int) DatabaseUtils.queryNumEntries(db, "rule");
     }
 
     public int updateRule(Rule r) {
@@ -250,13 +267,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public List<Rule> getAllRule() {
-        List<Rule> rule_list = new ArrayList<Rule>();
+        List<Rule> rule_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from rule", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             Rule r = new Rule();
             r.setId_rule(res.getInt(res.getColumnIndex("id_rule")));
             r.setRule(res.getString(res.getColumnIndex("rule")));
@@ -264,6 +281,7 @@ public class DBHelper extends SQLiteOpenHelper {
             rule_list.add(r);
             res.moveToNext();
         }
+        res.close();
         return rule_list;
     }
 /* Rule table-end */
@@ -278,9 +296,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("name", s.getName());
         contentValues.put("value", s.getValue());
 
-        long id = db.insert("settings", null, contentValues);
-
-        return id;
+        return db.insert("settings", null, contentValues);
     }
 
     public Settings getSetting(Settings s) {
@@ -293,13 +309,13 @@ public class DBHelper extends SQLiteOpenHelper {
         settingsObj.setName(res.getString(res.getColumnIndex("name")));
         settingsObj.setValue(res.getString(res.getColumnIndex("value")));
 
+        res.close();
         return settingsObj;
     }
 
     public int numberOfRowsSettings() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, "settings");
-        return numRows;
+        return (int) DatabaseUtils.queryNumEntries(db, "settings");
     }
 
     public int updateSettings(Settings s) {
@@ -317,13 +333,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public List<Settings> getAllSettings() {
-        List<Settings> settings_list = new ArrayList<Settings>();
+        List<Settings> settings_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from settings", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             Settings s = new Settings();
             s.setId_setting(res.getInt(res.getColumnIndex("id_settings")));
             s.setName(res.getString(res.getColumnIndex("name")));
@@ -331,6 +347,7 @@ public class DBHelper extends SQLiteOpenHelper {
             settings_list.add(s);
             res.moveToNext();
         }
+        res.close();
         return settings_list;
     }
 /* Settings table-end */
@@ -344,9 +361,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("id_folder", s.getId_folder());
         contentValues.put("id_SMS", s.getId_SMS());
 
-        long id = db.insert("SMSReffolder", null, contentValues);
-
-        return id;
+        return db.insert("SMSReffolder", null, contentValues);
     }
 
     public SMSRefFolder getSMSReffolder(SMSRefFolder s) {
@@ -359,13 +374,13 @@ public class DBHelper extends SQLiteOpenHelper {
         smsRefFolderObj.setId_SMS(res.getInt(res.getColumnIndex("id_sms")));
         smsRefFolderObj.setId_folder(res.getInt(res.getColumnIndex("id_folder")));
 
+        res.close();
         return smsRefFolderObj;
     }
 
     public int numberOfRowsSMSRefFolder() {
         SQLiteDatabase db = this.getReadableDatabase();
-        int numRows = (int) DatabaseUtils.queryNumEntries(db, "SMSReffolder");
-        return numRows;
+        return (int) DatabaseUtils.queryNumEntries(db, "SMSReffolder");
     }
 
     public int updateSMSRefFolder(SMSRefFolder s) {
@@ -383,13 +398,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public List<SMSRefFolder> getAllSMSReffolder() {
-        List<SMSRefFolder> smsRefFolder_list = new ArrayList<SMSRefFolder>();
+        List<SMSRefFolder> smsRefFolder_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from SMSReffolder", null);
         res.moveToFirst();
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             SMSRefFolder s = new SMSRefFolder();
             s.setId_ref(res.getInt(res.getColumnIndex("id_ref")));
             s.setId_SMS(res.getInt(res.getColumnIndex("id_sms")));
@@ -397,6 +412,8 @@ public class DBHelper extends SQLiteOpenHelper {
             smsRefFolder_list.add(s);
             res.moveToNext();
         }
+
+        res.close();
         return smsRefFolder_list;
     }
 /* SMSRefFolder table-end */

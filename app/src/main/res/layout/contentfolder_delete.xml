@@ -11,13 +11,14 @@
     <ListView
         android:id="@+id/SMSFolderListDelete"
         style="@style/Widget.AppCompat.ListView.Menu"
-        android:layout_width="368dp"
+        android:layout_width="match_parent"
         android:layout_height="551dp"
         android:choiceMode="multipleChoice"
         android:scrollbars="horizontal"
         android:visibility="visible"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="56dp" />
+        tools:layout_editor_absoluteY="56dp"
+        tools:ignore="MissingConstraints" />
 
 
 </android.support.constraint.ConstraintLayout>

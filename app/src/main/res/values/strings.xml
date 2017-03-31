@@ -11,7 +11,6 @@
     <string name="action_create_rule">Create filtering rule</string>
 
     <string name="action_settings">User settings</string>
-    <string name="title_activity_edit_folder">EditFolder</string>
 
     <string name="dialog_title">Delete folder</string>
     <string name="cancel">Cancel</string>
@@ -19,5 +18,10 @@
 
     <string name="Deleteall">Delete all SMSes and this folder?</string>
     <string name="MoveSMS">Move SMSes to Incoming and delete folder?</string>
+    <string name="new_folder">New Folder</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
+    <string name="user_settings">User settings</string>
+    <string name="edit_folder">Edit Folder</string>
 
 </resources>

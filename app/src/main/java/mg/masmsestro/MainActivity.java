@@ -1,11 +1,7 @@
 package mg.masmsestro;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,12 +12,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
-import android.database.Cursor;
 
 //import mg.masmsestro.DBHelper;
 
@@ -31,7 +24,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-    List<String> FolderList = new ArrayList<String>();
+    private List<String> FolderList = new ArrayList<>();
     private DBHelper dbHelper;
 
 
@@ -60,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a = new ArrayAdapter<String>(
+        ArrayAdapter a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, FolderList
         );
@@ -92,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a = new ArrayAdapter<String>(
+        ArrayAdapter a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, FolderList
         );
@@ -123,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                             @Override
                                             public void onClick(View view) {
                                                 EditText editText = (EditText) findViewById(R.id.edtFolderName);
-                                                String s = (String) editText.getText().toString();
+                                                String s =  editText.getText().toString();
                                                 if (!s.isEmpty()) {
                                                     //let's check whether folder with the same name exists in DB
                                                     if (dbHelper.getFolderByName(s) == -1) {

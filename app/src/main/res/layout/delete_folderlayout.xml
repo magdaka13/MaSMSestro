@@ -30,7 +30,6 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_below="@+id/toolbarFolderDelete"
-                android:layout_weight="533.00"
                 android:paddingLeft="0dp"
                 android:saveEnabled="false"
                 android:text="@android:string/selectAll"
@@ -43,7 +42,8 @@
                 android:layout_above="@+id/chkboxSelectAll"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher" />
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="@string/delete" />
 
         </RelativeLayout>
 
@@ -52,9 +52,7 @@
     <include
         android:id="@+id/folder_list_delete"
         layout="@layout/contentfolder_delete"
-
-
-        android:layout_height="515dp" />
+         />
 
 
 </android.support.design.widget.CoordinatorLayout>

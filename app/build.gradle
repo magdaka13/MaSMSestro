@@ -6,6 +6,7 @@ android {
     defaultConfig {
         applicationId "mg.masmsestro"
         minSdkVersion 9
+        //noinspection OldTargetApi
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"

@@ -21,7 +21,7 @@ import mg.masmsestro.DBHelper;
 import java.util.ArrayList;
 
 public class SMSActivity extends AppCompatActivity {
-    ArrayList<String> SMSList = new ArrayList<String>();
+    ArrayList<String> SMSList = new ArrayList<>();
 
 
     @Override

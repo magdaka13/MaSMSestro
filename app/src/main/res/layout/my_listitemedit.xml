@@ -10,6 +10,7 @@
     android:textColor="@color/colorWhite"
     android:textSize="20sp"
     android:checkMark="?android:attr/listChoiceIndicatorSingle"
-    android:checkMarkTint="@color/colorAccent" />
+    android:checkMarkTint="@color/colorAccent"
+    tools:targetApi="lollipop" />
 
 
