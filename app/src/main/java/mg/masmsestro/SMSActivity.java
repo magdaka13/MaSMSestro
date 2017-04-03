@@ -15,6 +15,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+import java.util.List;
+import android.net.Uri;
+import android.database.Cursor;
+
+
+
+
+
+
+
 
 import mg.masmsestro.DBHelper;
 
@@ -37,8 +47,36 @@ public class SMSActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
+        List<String> smsList = new ArrayList<>();
 
-        Log.e("MaSMSestro", "created new activity SMS->" + message);
+        Uri uri = Uri.parse("content://sms/inbox");
+        Cursor c= getContentResolver().query(uri, null, null ,null,null);
+        startManagingCursor(c);
+
+        // Read the sms data and store it in the list
+        if(c.moveToFirst()) {
+            for(int i=0; i < c.getCount(); i++) {
+                SMS sms = new SMS();
+                sms.setContent(c.getString(c.getColumnIndexOrThrow("body")).toString());
+                sms.setTel_no(c.getString(c.getColumnIndexOrThrow("address")).toString());
+                smsList.add(sms.getTel_no());
+
+                c.moveToNext();
+            }
+        }
+        c.close();
+
+        // Set smsList in the ListAdapter
+        //setListAdapter(new ListAdapter(this, smsList));
+         ListView SMSList1 = (ListView) findViewById(R.id.SMSList);
+        ArrayAdapter a=new ArrayAdapter<String>(
+                getApplicationContext(),
+                R.layout.my_list_item1,smsList
+        );
+        SMSList1.setAdapter(a);
+
+
+     //    Log.e("MaSMSestro", "created new activity SMS->" + message);
 /*
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
@@ -54,7 +92,7 @@ public class SMSActivity extends AppCompatActivity {
         FolderList = dbHelper.getAllFolders();
 
         ListView SMSItems=(ListView) findViewById(R.id.SMSList);
-        ArrayAdapter a=new ArrayAdapter<String>(
+         ArrayAdapter a=new ArrayAdapter<String>(
                 getApplicationContext(),
                 R.layout.my_list_item1,FolderList
         );
