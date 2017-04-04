@@ -1,6 +1,8 @@
 package mg.masmsestro;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -36,9 +38,9 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         dbHelper = new DBHelper(getApplicationContext());
-
+//first read all folders
         Integer no = dbHelper.numberOfRowsFolder();
-        Log.e("MaSMSestro", no.toString());
+//        Log.e("MaSMSestro", no.toString());
 
         if (no == 0) {
             Folder f = new Folder();
@@ -59,7 +61,50 @@ public class MainActivity extends AppCompatActivity {
         );
         SMSFolders.setAdapter(a);
 
+//second - retreive smses from telephone and put them into DB
+        List<String> smsList = new ArrayList<>();
 
+        Uri uri = Uri.parse("content://sms/inbox");
+        Cursor c= getContentResolver().query(uri, null, null ,null,null);
+        startManagingCursor(c);
+
+        // Read the sms data and store it in the list
+        if(c.moveToFirst()) {
+            for(int i=0; i < c.getCount(); i++) {
+                SMS sms = new SMS();
+                sms.setContent(c.getString(c.getColumnIndexOrThrow("body")).toString());
+                sms.setTel_no(c.getString(c.getColumnIndexOrThrow("address")).toString());
+//                smsList.add(sms.getTel_no());
+
+                if (dbHelper.getSMS(sms)==null)
+{
+    Log.e("MaSMSestro","sms doesnt exist");
+/*
+    dbHelper.insertSMS(sms);
+
+    SMSRefFolder ref=new SMSRefFolder();
+    ref.setId_folder(dbHelper.getFolderByName("Incoming"));
+    ref.setId_SMS(dbHelper.getSMS(sms).getSms_id());
+    dbHelper.insertSMSRefFolder(ref);
+*/
+}
+
+                c.moveToNext();
+            }
+        }
+        c.close();
+/*
+        // Set smsList in the ListAdapter
+        //setListAdapter(new ListAdapter(this, smsList));
+        ListView SMSList1 = (ListView) findViewById(R.id.SMSList);
+        ArrayAdapter a=new ArrayAdapter<String>(
+                getApplicationContext(),
+                R.layout.my_list_item1,smsList
+        );
+        SMSList1.setAdapter(a);
+*/
+
+ //now - let's handle clicking on folders list
         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {

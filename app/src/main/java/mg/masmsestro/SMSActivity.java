@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
 import java.util.List;
 import android.net.Uri;
 import android.database.Cursor;
@@ -31,53 +33,43 @@ import mg.masmsestro.DBHelper;
 import java.util.ArrayList;
 
 public class SMSActivity extends AppCompatActivity {
-    ArrayList<String> SMSList = new ArrayList<>();
 
+    private List<SMS> SMSList;
+    private List<String>SMSList_string;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        String folder_name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
 
-        setTitle(" MaSMSestro->" + message);
+        setTitle(" MaSMSestro->" + folder_name);
 
         setContentView(R.layout.sms_list_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
 
-        List<String> smsList = new ArrayList<>();
+        DBHelper dbHelper=new DBHelper(getApplicationContext());
+        SMSList=dbHelper.getAllSMSbyFolderName(folder_name);
 
-        Uri uri = Uri.parse("content://sms/inbox");
-        Cursor c= getContentResolver().query(uri, null, null ,null,null);
-        startManagingCursor(c);
-
-        // Read the sms data and store it in the list
-        if(c.moveToFirst()) {
-            for(int i=0; i < c.getCount(); i++) {
-                SMS sms = new SMS();
-                sms.setContent(c.getString(c.getColumnIndexOrThrow("body")).toString());
-                sms.setTel_no(c.getString(c.getColumnIndexOrThrow("address")).toString());
-                smsList.add(sms.getTel_no());
-
-                c.moveToNext();
-            }
+        for (int i=0;i<SMSList.size();i++) {
+            String sms_short=SMSList.get(i).getTel_no().toString()+System.getProperty("line.separator")+SMSList.get(i).getContent().substring(0,50)+"...";
+            SMSList_string.add(sms_short);
         }
-        c.close();
 
-        // Set smsList in the ListAdapter
-        //setListAdapter(new ListAdapter(this, smsList));
-         ListView SMSList1 = (ListView) findViewById(R.id.SMSList);
-        ArrayAdapter a=new ArrayAdapter<String>(
-                getApplicationContext(),
-                R.layout.my_list_item1,smsList
-        );
-        SMSList1.setAdapter(a);
+        if (SMSList_string.size()>0) {
+            ListView SMSItems = (ListView) findViewById(R.id.SMSList);
+            ArrayAdapter a = new ArrayAdapter<String>(
+                    getApplicationContext(),
+                    R.layout.my_list_item1, SMSList_string
+            );
+            SMSItems.setAdapter(a);
+        }
 
-
-     //    Log.e("MaSMSestro", "created new activity SMS->" + message);
 /*
+     //    Log.e("MaSMSestro", "created new activity SMS->" + folder_name);
+
         DBHelper dbHelper=new DBHelper(getApplicationContext());
 
         Integer no=dbHelper.numberOfRows();

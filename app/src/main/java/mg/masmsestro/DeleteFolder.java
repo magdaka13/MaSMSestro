@@ -39,7 +39,7 @@ public class DeleteFolder extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolderDelete);
         setSupportActionBar(toolbar);
-
+        setTitle(" MaSMSestro-> Delete Folder");
 
         dbHelper = new DBHelper(getApplicationContext());
         List<String> folderList = dbHelper.getAllFoldersNames();

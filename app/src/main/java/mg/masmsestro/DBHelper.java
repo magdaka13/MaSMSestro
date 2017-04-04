@@ -155,15 +155,23 @@ class DBHelper extends SQLiteOpenHelper {
     public SMS getSMS(SMS s) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from sms where id_sms=" + s.getSms_id() + "", null);
+        String sql_string="select * from sms where tel_no="+"\"+s.getTel_no().toString() + \""+ " and content="+"\"+s.getContent()+\""+"";
+        Cursor res = db.rawQuery(sql_string,null);
+         //       "\\+ s.getTel_no() + "\"" and content="\""+s.getContent()+"\"", null);
 
-        SMS smsObj = new SMS();
-        smsObj.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
-        smsObj.setTel_no(res.getString(res.getColumnIndex("tel_no")));
-        smsObj.setContent(res.getString(res.getColumnIndex("content")));
 
-        res.close();
-        return smsObj;
+        if (res != null && res.moveToFirst()) {
+            res.close();
+            SMS smsObj = new SMS();
+            smsObj.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
+            smsObj.setTel_no(res.getString(res.getColumnIndex("tel_no")));
+            smsObj.setContent(res.getString(res.getColumnIndex("content")));
+            return smsObj;
+        } else {
+
+            return null;
+        }
+
     }
 
     public int numberOfRowsSMS() {
@@ -201,11 +209,11 @@ class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<SMS> getAllSMS() {
+    public List<SMS> getAllSMSbyFolderName(String folder_name) {
         List<SMS> sms_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from sms", null);
+        Cursor res = db.rawQuery("select * from sms where sms_id in (select sms_id from smsReffolder where id_folder in (select id from folder where name='"+folder_name+"'))", null);
         res.moveToFirst();
 
         while (!res.isAfterLast()) {

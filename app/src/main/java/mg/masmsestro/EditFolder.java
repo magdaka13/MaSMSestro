@@ -25,6 +25,7 @@ public class EditFolder extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_folderlayout);
 
+        setTitle(" MaSMSestro-> Edit Folder");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolder);
         setSupportActionBar(toolbar);
 
