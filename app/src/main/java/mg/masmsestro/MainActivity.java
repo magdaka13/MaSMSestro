@@ -76,33 +76,43 @@ public class MainActivity extends AppCompatActivity {
                 sms.setTel_no(c.getString(c.getColumnIndexOrThrow("address")).toString());
 //                smsList.add(sms.getTel_no());
 
+                SMS sms1=dbHelper.getSMS(sms);
+                if (sms1!=null)
+                {
+                    long z=dbHelper.deleteSMS(sms1);
+                    Log.e("MaSMSestro","deleted="+z);
+                }
+
                 if (dbHelper.getSMS(sms)==null)
 {
     Log.e("MaSMSestro","sms doesnt exist");
-/*
-    dbHelper.insertSMS(sms);
+long sms_id=dbHelper.insertSMS(sms);
+Log.e("MaSMSestro","insertedSMS="+sms_id);
 
-    SMSRefFolder ref=new SMSRefFolder();
-    ref.setId_folder(dbHelper.getFolderByName("Incoming"));
-    ref.setId_SMS(dbHelper.getSMS(sms).getSms_id());
-    dbHelper.insertSMSRefFolder(ref);
-*/
+    if (sms_id!=-1) {
+        SMSRefFolder ref = new SMSRefFolder();
+        ref.setId_folder(dbHelper.getFolderByName("Incoming"));
+        ref.setId_SMS((int) sms_id);
+
+        Folder f = dbHelper.getFolderById(ref.getId_folder());
+        String name_f = "";
+        if (f != null) {
+            name_f = f.getName();
+        } else
+        {
+            name_f="folder not found="+ref.getId_folder();
+        }
+
+        Log.e("MaSMSestro","inserted to smsmRefFolder="+dbHelper.insertSMSRefFolder(ref)+"sms_id:"+ref.getId_SMS()+"folder_name="+name_f);
+
+    }
+
 }
 
                 c.moveToNext();
             }
         }
         c.close();
-/*
-        // Set smsList in the ListAdapter
-        //setListAdapter(new ListAdapter(this, smsList));
-        ListView SMSList1 = (ListView) findViewById(R.id.SMSList);
-        ArrayAdapter a=new ArrayAdapter<String>(
-                getApplicationContext(),
-                R.layout.my_list_item1,smsList
-        );
-        SMSList1.setAdapter(a);
-*/
 
  //now - let's handle clicking on folders list
         SMSFolders.setOnItemClickListener(new OnItemClickListener() {

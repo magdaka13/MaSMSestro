@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class SMSActivity extends AppCompatActivity {
 
     private List<SMS> SMSList;
-    private List<String>SMSList_string;
+    private List<String>SMSList_string=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,9 +52,20 @@ public class SMSActivity extends AppCompatActivity {
 
         DBHelper dbHelper=new DBHelper(getApplicationContext());
         SMSList=dbHelper.getAllSMSbyFolderName(folder_name);
+Log.e("MaSMSestro","Retreived SMSList size="+SMSList.size());
 
         for (int i=0;i<SMSList.size();i++) {
-            String sms_short=SMSList.get(i).getTel_no().toString()+System.getProperty("line.separator")+SMSList.get(i).getContent().substring(0,50)+"...";
+          //  String sms_short=SMSList.get(i).getTel_no().toString()+System.getProperty("line.separator")+SMSList.get(i).getContent().substring(0,50)+"...";
+            String sms_body;
+            if (SMSList.get(i).getContent().length()>=20) {
+                sms_body = SMSList.get(i).getContent().substring(0, 20);
+            }
+            else
+            {
+                sms_body=SMSList.get(i).getContent();
+            }
+
+           String sms_short=SMSList.get(i).getTel_no().toString()+System.getProperty("line.separator")+sms_body+"...";
             SMSList_string.add(sms_short);
         }
 

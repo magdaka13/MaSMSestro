@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 class DBHelper extends SQLiteOpenHelper {
 
@@ -53,26 +54,35 @@ class DBHelper extends SQLiteOpenHelper {
 
     }
 
-    public Folder getFolderById(Folder f) {
+    public Folder getFolderById(int id) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from folder where id=" + f.getId() + "", null);
+        Cursor res = db.rawQuery("select * from folder where id=" + id + "", null);
 
-        Folder folderObj = new Folder();
-        folderObj.setId(res.getInt(res.getColumnIndex("id")));
-        folderObj.setName(res.getString(res.getColumnIndex("name")));
+        if (res != null && res.moveToFirst()) {
 
-        res.close();
-        return folderObj;
+            Folder folderObj = new Folder();
+            folderObj.setId(res.getInt(res.getColumnIndex("id")));
+            folderObj.setName(res.getString(res.getColumnIndex("name")));
+
+            res.close();
+            return folderObj;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     public int getFolderByName(String name) {
+int id=0;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select id from folder where name='" + name + "'", null);
         if (res != null && res.moveToFirst()) {
+            id=Integer.parseInt(res.getString(res.getColumnIndex("id")));
             res.close();
-            return Integer.parseInt(res.getString(res.getColumnIndex("id")));
+            return id;
         } else {
 
             return -1;
@@ -155,17 +165,22 @@ class DBHelper extends SQLiteOpenHelper {
     public SMS getSMS(SMS s) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_string="select * from sms where tel_no="+"\"+s.getTel_no().toString() + \""+ " and content="+"\"+s.getContent()+\""+"";
+        String content=s.getContent().replaceAll("\"","'");
+        String sql_string="select * from sms where tel_no="+"\""+s.getTel_no().toString() + "\""+ " and content="+"\""+content+"\""+"";
+
+       Log.e("MaSMSestro","getSMS - sql="+sql_string);
+
         Cursor res = db.rawQuery(sql_string,null);
-         //       "\\+ s.getTel_no() + "\"" and content="\""+s.getContent()+"\"", null);
+
 
 
         if (res != null && res.moveToFirst()) {
-            res.close();
+
             SMS smsObj = new SMS();
             smsObj.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
             smsObj.setTel_no(res.getString(res.getColumnIndex("tel_no")));
             smsObj.setContent(res.getString(res.getColumnIndex("content")));
+            res.close();
             return smsObj;
         } else {
 
@@ -190,7 +205,7 @@ class DBHelper extends SQLiteOpenHelper {
 
     public Integer deleteSMS(SMS s) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("sms", "id = ? ", new String[]{Integer.toString(s.getSms_id())});
+        return db.delete("sms", "sms_id = ? ", new String[]{Integer.toString(s.getSms_id())});
     }
 
     public Cursor deleteAllSMS(Folder f) {
@@ -213,7 +228,9 @@ class DBHelper extends SQLiteOpenHelper {
         List<SMS> sms_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from sms where sms_id in (select sms_id from smsReffolder where id_folder in (select id from folder where name='"+folder_name+"'))", null);
+        String sql_str="select * from sms where sms_id in (select sms_id from smsReffolder where id_folder in (select id from folder where name='"+folder_name+"'))";
+        Log.e("MaSMSestro","sql="+sql_str);
+        Cursor res = db.rawQuery(sql_str, null);
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
