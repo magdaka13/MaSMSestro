@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.List;
 import android.net.Uri;
 import android.database.Cursor;
@@ -31,6 +32,8 @@ import android.database.Cursor;
 import mg.masmsestro.DBHelper;
 
 import java.util.ArrayList;
+
+import static java.util.Collections.*;
 
 public class SMSActivity extends AppCompatActivity {
 
@@ -67,6 +70,8 @@ Log.e("MaSMSestro","Retreived SMSList size="+SMSList.size());
 
            String sms_short=SMSList.get(i).getTel_no().toString()+System.getProperty("line.separator")+sms_body+"...";
             SMSList_string.add(sms_short);
+
+
         }
 
         if (SMSList_string.size()>0) {

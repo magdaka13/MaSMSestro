@@ -22,8 +22,16 @@ class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        db.execSQL("DROP TABLE IF EXISTS folders");
+        db.execSQL("DROP TABLE IF EXISTS sms");
+        db.execSQL("DROP TABLE IF EXISTS rule");
+        db.execSQL("DROP TABLE IF EXISTS settings");
+        db.execSQL("DROP TABLE IF EXISTS smsReffolder");
+
+
         db.execSQL("create table if not exists folder (id integer primary key, name text)");
-        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text)");
+        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received date,date_sent date,read integer,seen integer,person text,thread_id integer)");
         db.execSQL("create table if not exists rule (id_rule integer primary key, rule text,id_folder integer)");
         db.execSQL("create table if not exists settings (id_settings integer primary key, name text,value text)");
         db.execSQL("create table if not exists smsReffolder (id_ref integer primary key, id_sms integer,id_folder integer)");
@@ -158,6 +166,12 @@ int id=0;
         ContentValues contentValues = new ContentValues();
         contentValues.put("tel_no", s.getTel_no());
         contentValues.put("content", s.getContent());
+        contentValues.put("date_received", s.getDate_received().toString());
+        contentValues.put("date_sent", s.getDate_sent().toString());
+        contentValues.put("read", s.getRead());
+        contentValues.put("seen", s.getSeen());
+        contentValues.put("person", s.getPerson());
+        contentValues.put("thread_id", s.getThread_id());
 
         return db.insert("sms", null, contentValues);
     }
@@ -225,23 +239,36 @@ int id=0;
 
 
     public List<SMS> getAllSMSbyFolderName(String folder_name) {
+        Integer thread_id,prev_thread_id;
         List<SMS> sms_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_str="select * from sms where sms_id in (select sms_id from smsReffolder where id_folder in (select id from folder where name='"+folder_name+"'))";
+        String sql_str="select * from sms where sms_id in (select sms_id from smsReffolder where id_folder in (select id from folder where name='"+folder_name+"')) order by sms_id desc";
         Log.e("MaSMSestro","sql="+sql_str);
         Cursor res = db.rawQuery(sql_str, null);
         res.moveToFirst();
 
+        thread_id=-1;
+        prev_thread_id=-1;
         while (!res.isAfterLast()) {
-            SMS s = new SMS();
-            s.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
-            s.setContent(res.getString(res.getColumnIndex("content")));
-            s.setTel_no(res.getString(res.getColumnIndex("tel_no")));
-            sms_list.add(s);
+
+            thread_id=res.getInt(res.getColumnIndexOrThrow("thread_id"));
+
+            if (!thread_id.equals(prev_thread_id))
+            {
+                SMS s = new SMS();
+                s.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
+                s.setContent(res.getString(res.getColumnIndex("content")));
+                s.setTel_no(res.getString(res.getColumnIndex("tel_no")));
+                sms_list.add(s);
+            }
+
+            prev_thread_id=thread_id;
             res.moveToNext();
         }
         res.close();
+
+
         return sms_list;
     }
 /* SMS table-end */
