@@ -17,24 +17,26 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SMSDB.db";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 1);
+        super(context, DATABASE_NAME, null, 2);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
         db.execSQL("DROP TABLE IF EXISTS folders");
+        db.execSQL("DROP TABLE IF EXISTS conversation");
         db.execSQL("DROP TABLE IF EXISTS sms");
         db.execSQL("DROP TABLE IF EXISTS rule");
         db.execSQL("DROP TABLE IF EXISTS settings");
-        db.execSQL("DROP TABLE IF EXISTS smsReffolder");
+        db.execSQL("DROP TABLE IF EXISTS convReffolder");
 
 
         db.execSQL("create table if not exists folder (id integer primary key, name text)");
-        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received date,date_sent date,read integer,seen integer,person text,thread_id integer)");
+        db.execSQL("create table if not exists conversation (conv_id integer primary key, recipient_list text, snippet text,thread_id int,date long,read integer,seen integer)");
+        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received long,date_sent long,read integer,seen integer,person text,thread_id integer)");
         db.execSQL("create table if not exists rule (id_rule integer primary key, rule text,id_folder integer)");
         db.execSQL("create table if not exists settings (id_settings integer primary key, name text,value text)");
-        db.execSQL("create table if not exists smsReffolder (id_ref integer primary key, id_sms integer,id_folder integer)");
+        db.execSQL("create table if not exists convReffolder (id_ref integer primary key, id_conv integer,id_folder integer)");
 
     }
 
@@ -42,10 +44,11 @@ class DBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
         db.execSQL("DROP TABLE IF EXISTS folders");
+        db.execSQL("DROP TABLE IF EXISTS conversation");
         db.execSQL("DROP TABLE IF EXISTS sms");
         db.execSQL("DROP TABLE IF EXISTS rule");
         db.execSQL("DROP TABLE IF EXISTS settings");
-        db.execSQL("DROP TABLE IF EXISTS smsReffolder");
+        db.execSQL("DROP TABLE IF EXISTS convReffolder");
 
         onCreate(db);
     }
@@ -158,6 +161,84 @@ int id=0;
 
     /* Folder table-end */
 
+/*Conversation table */
+public Conversation getConversation(Conversation s) {
+String content;
+    SQLiteDatabase db = this.getReadableDatabase();
+    if (s.getSnippet()!=null) {
+        content = s.getSnippet().replaceAll("\"", "'");
+    }
+    else
+    {
+        content="";
+    }
+    String sql_string="select * from conversation where recipient_list="+"\""+s.getRecipient_list() + "\""+ " and snippet="+"\""+content+"\""+"";
+
+    Log.e("MaSMSestro","getConversation - sql="+sql_string);
+
+    Cursor res = db.rawQuery(sql_string,null);
+    if (res != null && res.moveToFirst()) {
+
+        Conversation convObj = new Conversation();
+        convObj.setConv_id(res.getInt(res.getColumnIndex("conv_id")));
+        convObj.setRecipient_list(res.getString(res.getColumnIndex("recipient_list")));
+        convObj.setSnippet(res.getString(res.getColumnIndex("snippet")));
+        res.close();
+        return convObj;
+    } else {
+
+        return null;
+    }
+
+}
+
+    public List<Conversation> getAllConversationbyFolderName(String folder_name) {
+        List<Conversation> conversation_list = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) order by date desc";
+        Log.e("MaSMSestro","sql="+sql_str);
+        Cursor res = db.rawQuery(sql_str, null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+
+                Conversation s = new Conversation();
+                s.setConv_id(res.getInt(res.getColumnIndex("conv_id")));
+                s.setRecipient_list(res.getString(res.getColumnIndex("recipient_list")));
+                s.setSnippet(res.getString(res.getColumnIndex("snippet")));
+                conversation_list.add(s);
+
+            res.moveToNext();
+        }
+        res.close();
+
+
+        return conversation_list;
+    }
+
+public long insertConversation(Conversation s) {
+
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues contentValues = new ContentValues();
+    contentValues.put("recipient_list", s.getRecipient_list());
+    contentValues.put("snippet", s.getSnippet());
+    contentValues.put("thread_id", s.getThread_id());
+    contentValues.put("date", s.getDate());
+    contentValues.put("read", s.getRead());
+    contentValues.put("seen", s.getSeen());
+
+    return db.insert("conversation", null, contentValues);
+}
+
+    public Integer deleteConversation(Conversation s) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("conversation", "conv_id = ? ", new String[]{Integer.toString(s.getConv_id())});
+    }
+
+
+/*Conversation table - end*/
+
 /* SMS table */
 
     public long insertSMS(SMS s) {
@@ -166,8 +247,8 @@ int id=0;
         ContentValues contentValues = new ContentValues();
         contentValues.put("tel_no", s.getTel_no());
         contentValues.put("content", s.getContent());
-        contentValues.put("date_received", s.getDate_received().toString());
-        contentValues.put("date_sent", s.getDate_sent().toString());
+        contentValues.put("date_received", s.getDate_received());
+        contentValues.put("date_sent", s.getDate_sent());
         contentValues.put("read", s.getRead());
         contentValues.put("seen", s.getSeen());
         contentValues.put("person", s.getPerson());
@@ -229,15 +310,16 @@ int id=0;
         c=db.rawQuery("delete from smsReffolder where id_folder="+f.getId(),null);
         return c;
     }
-
+/*
     public Cursor moveSMSToIncoming(Folder f) {
         Cursor c;
         SQLiteDatabase db = this.getWritableDatabase();
         c=db.rawQuery("update smsReffolder set id_folder="+getFolderByName("Incoming")+" where id_folder="+f.getId(),null);
         return c;
     }
+*/
 
-
+/*
     public List<SMS> getAllSMSbyFolderName(String folder_name) {
         Integer thread_id,prev_thread_id;
         List<SMS> sms_list = new ArrayList<>();
@@ -271,6 +353,7 @@ int id=0;
 
         return sms_list;
     }
+    */
 /* SMS table-end */
 
 /* Rule table */
@@ -406,49 +489,50 @@ int id=0;
 
 /* SMSrefFolder table */
 
-    public long insertSMSRefFolder(SMSRefFolder s) {
+    public long insertConvRefFolder(ConvRefFolder s) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("id_folder", s.getId_folder());
-        contentValues.put("id_SMS", s.getId_SMS());
+        contentValues.put("id_conv", s.getId_Conv());
 
-        return db.insert("SMSReffolder", null, contentValues);
+        return db.insert("ConvReffolder", null, contentValues);
     }
 
-    public SMSRefFolder getSMSReffolder(SMSRefFolder s) {
+    public ConvRefFolder getConvReffolder(ConvRefFolder s) {
 
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from SMSReffolder where id_ref=" + s.getId_ref() + "", null);
+        Cursor res = db.rawQuery("select * from ConvReffolder where id_ref=" + s.getId_ref() + "", null);
 
-        SMSRefFolder smsRefFolderObj = new SMSRefFolder();
+        ConvRefFolder smsRefFolderObj = new ConvRefFolder();
         smsRefFolderObj.setId_ref(res.getInt(res.getColumnIndex("id_ref")));
-        smsRefFolderObj.setId_SMS(res.getInt(res.getColumnIndex("id_sms")));
+        smsRefFolderObj.setId_Conv(res.getInt(res.getColumnIndex("id_conv")));
         smsRefFolderObj.setId_folder(res.getInt(res.getColumnIndex("id_folder")));
 
         res.close();
         return smsRefFolderObj;
     }
 
-    public int numberOfRowsSMSRefFolder() {
+    public int numberOfRowsConvRefFolder() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return (int) DatabaseUtils.queryNumEntries(db, "SMSReffolder");
+        return (int) DatabaseUtils.queryNumEntries(db, "ConvReffolder");
     }
-
-    public int updateSMSRefFolder(SMSRefFolder s) {
+/*
+    public int updateSMSRefFolder(ConvRefFolder s) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("id_sms", s.getId_SMS());
+        contentValues.put("id_sms", s.getId_Conv());
         contentValues.put("id_folder", s.getId_folder());
-        return db.update("SMSReffolder", contentValues, "id_ref = ? ", new String[]{Integer.toString(s.getId_ref())});
+        return db.update("ConvReffolder", contentValues, "id_ref = ? ", new String[]{Integer.toString(s.getId_ref())});
 
     }
-
-    public Integer deleteSMSRefFolder(SMSRefFolder s) {
+*/
+    public Integer deleteConvRefFolder(ConvRefFolder s) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("SMSReffolder", "id_ref = ? ", new String[]{Integer.toString(s.getId_ref())});
+        return db.delete("ConvReffolder", "id_ref = ? ", new String[]{Integer.toString(s.getId_ref())});
     }
 
+    /*
     public List<SMSRefFolder> getAllSMSReffolder() {
         List<SMSRefFolder> smsRefFolder_list = new ArrayList<>();
 
@@ -468,6 +552,8 @@ int id=0;
         res.close();
         return smsRefFolder_list;
     }
+    */
+
 /* SMSRefFolder table-end */
 
 

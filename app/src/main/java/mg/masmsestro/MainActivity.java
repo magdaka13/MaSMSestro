@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView.OnItemClickListener;
+import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,18 +19,18 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-//import mg.masmsestro.DBHelper;
-
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+//import mg.masmsestro.DBHelper;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "";
     private List<String> FolderList = new ArrayList<>();
     private DBHelper dbHelper;
-
+private ListView SMSFolders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,75 +58,141 @@ public class MainActivity extends AppCompatActivity {
         FolderList = dbHelper.getAllFoldersNames();
 
 
-        ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
+        SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
         ArrayAdapter a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, FolderList
         );
         SMSFolders.setAdapter(a);
 
-//second - retreive smses from telephone and put them into DB
-        List<String> smsList = new ArrayList<>();
-        final String[] projection = new String[]{"*"};
+//second - retreive smses and mmses from telephone and put them into DB
+        //List<String> smsList = new ArrayList<>();
+        final String[] projection = new String[]{"_id","ct_t","address","body","thread_id","date","read"};
 
-        Uri uri = Uri.parse("content://sms/");
-        Cursor c= getContentResolver().query(uri, projection, null ,null,null);
+
+        Uri uri = Uri.parse("content://mms-sms/conversations/");
+        Cursor c = getContentResolver().query(uri, projection, null, null, null);
 
 
         // Read the sms data and store it in the list
-        if(c.moveToFirst()) {
-            for(int i=0; i < c.getCount(); i++) {
-                SMS sms = new SMS();
-                sms.setContent(c.getString(c.getColumnIndexOrThrow("body")).toString());
-                sms.setTel_no(c.getString(c.getColumnIndexOrThrow("address")).toString());
-                sms.setDate_received(new Date(c.getLong(c.getColumnIndexOrThrow("date"))));
-                sms.setDate_sent(new Date(c.getLong(c.getColumnIndexOrThrow("date_sent"))));
-                sms.setRead(( c.getString(c.getColumnIndexOrThrow("read"))));
-                sms.setSeen( c.getString(c.getColumnIndexOrThrow("seen")));
-                sms.setPerson(c.getString(c.getColumnIndexOrThrow("person")));
-                sms.setThread_id(c.getInt(c.getColumnIndexOrThrow("thread_id")));
+        if (c.moveToFirst()) {
+            for (int i = 0; i < c.getCount(); i++) {
+                Integer id=c.getInt(c.getColumnIndex("_id"));
+                String string = c.getString(c.getColumnIndex("ct_t"));
 
-                Log.e("MaSMSestro","sms: tel="+sms.getTel_no()+"("+sms.getPerson()+");body="+sms.getContent()+";date_received="+new SimpleDateFormat("MM/dd/yyyy H:m:s").format(sms.getDate_received())+";date_sent="+new SimpleDateFormat("MM/dd/yyyy H:m:s").format(sms.getDate_sent())+";read="+sms.getRead()+";seen="+sms.getSeen()+";thread="+sms.getThread_id());
+                String recipient_list=c.getString(c.getColumnIndex("address"));
+                String snippet=c.getString(c.getColumnIndex("body"));
+                Integer thread_id=c.getInt(c.getColumnIndex("thread_id"));
+                long date=c.getLong(c.getColumnIndex("date"));
+                Integer read=c.getInt(c.getColumnIndex("read"));
+                //Integer seen=c.getInt(c.getColumnIndex("seen"));
 
-                SMS sms1=dbHelper.getSMS(sms);
-                if (sms1!=null)
-                {
-                    long z=dbHelper.deleteSMS(sms1);
-                    Log.e("MaSMSestro","deleted="+z);
+                Conversation conv=new Conversation();
+                conv.setRecipient_list(recipient_list);
+                conv.setSnippet(snippet);
+                conv.setThread_id(thread_id);
+                conv.setDate(date);
+                conv.setRead(read);
+                //conv.setSeen(seen);
+
+
+                Log.e("MaSMSestro", ":conversaion -> recipient=" + conv.getRecipient_list() +  ");snippet=" + conv.getSnippet() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(conv.getDate()))  + ";read=" + conv.getRead() + ";seen=" + conv.getSeen() + ";thread=" + conv.getThread_id());
+                Conversation conv1 = dbHelper.getConversation(conv);
+                if (conv1 != null) {
+                    long z = dbHelper.deleteConversation(conv1);
+                    Log.e("MaSMSestro", "deleted=" + z);
                 }
 
-                if (dbHelper.getSMS(sms)==null)
-{
-    Log.e("MaSMSestro","sms doesnt exist");
-long sms_id=dbHelper.insertSMS(sms);
-Log.e("MaSMSestro","insertedSMS="+sms_id);
+                if (dbHelper.getConversation(conv) == null) {
+                    Log.e("MaSMSestro", "conv doesnt exist");
+                    long conv_id = dbHelper.insertConversation(conv);
+                    Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
-    if (sms_id!=-1) {
-        SMSRefFolder ref = new SMSRefFolder();
-        ref.setId_folder(dbHelper.getFolderByName("Incoming"));
-        ref.setId_SMS((int) sms_id);
+                    if (conv_id != -1) {
+                        ConvRefFolder ref = new ConvRefFolder();
+                        ref.setId_folder(dbHelper.getFolderByName("Incoming"));
+                        ref.setId_Conv((int) conv_id);
 
-        Folder f = dbHelper.getFolderById(ref.getId_folder());
-        String name_f = "";
-        if (f != null) {
-            name_f = f.getName();
-        } else
-        {
-            name_f="folder not found="+ref.getId_folder();
-        }
+                        Folder f = dbHelper.getFolderById(ref.getId_folder());
+                        String name_f = "";
+                        if (f != null) {
+                            name_f = f.getName();
+                        } else {
+                            name_f = "folder not found=" + ref.getId_folder();
+                        }
 
-        Log.e("MaSMSestro","inserted to smsmRefFolder="+dbHelper.insertSMSRefFolder(ref)+"sms_id:"+ref.getId_SMS()+"folder_name="+name_f);
+                        Log.e("MaSMSestro", "inserted to ConvRefFolder=" + dbHelper.insertConvRefFolder(ref) + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
 
-    }
+                    }
 
-}
+                }
 
+                if ("application/vnd.wap.multipart.related".equals(string)) {
+
+                    //mms
+                    Log.e("MaSMSestro","MMS");
+                }
+                 else  //sms
+                    {
+                    String selection = "_id = "+id;
+                    Uri uri1 = Uri.parse("content://sms");
+                    Cursor cursor = getContentResolver().query(uri1, null, selection, null, null);
+
+                    if (cursor.moveToFirst()) {
+                        for (int j = 0; j < cursor.getCount(); j++) {
+                            SMS sms = new SMS();
+                            sms.setContent(cursor.getString(cursor.getColumnIndexOrThrow("body")).toString());
+                            sms.setTel_no(cursor.getString(cursor.getColumnIndexOrThrow("address")).toString());
+                            sms.setDate_received(cursor.getLong(cursor.getColumnIndexOrThrow("date")));
+                            sms.setDate_sent(cursor.getLong(cursor.getColumnIndexOrThrow("date_sent")));
+                            sms.setRead((cursor.getString(cursor.getColumnIndexOrThrow("read"))));
+                            sms.setSeen(cursor.getString(cursor.getColumnIndexOrThrow("seen")));
+                            sms.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
+                            sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
+
+                            Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id());
+
+                            SMS sms1 = dbHelper.getSMS(sms);
+                            if (sms1 != null) {
+                                long z = dbHelper.deleteSMS(sms1);
+                                Log.e("MaSMSestro", "deleted=" + z);
+                            }
+
+                            if (dbHelper.getSMS(sms) == null) {
+                                Log.e("MaSMSestro", "sms doesnt exist");
+                                long sms_id = dbHelper.insertSMS(sms);
+                                Log.e("MaSMSestro", "insertedSMS=" + sms_id);
+/*
+                                if (sms_id != -1) {
+                                    SMSRefFolder ref = new SMSRefFolder();
+                                    ref.setId_folder(dbHelper.getFolderByName("Incoming"));
+                                    ref.setId_SMS((int) sms_id);
+
+                                    Folder f = dbHelper.getFolderById(ref.getId_folder());
+                                    String name_f = "";
+                                    if (f != null) {
+                                        name_f = f.getName();
+                                    } else {
+                                        name_f = "folder not found=" + ref.getId_folder();
+                                    }
+*/
+                                    //Log.e("MaSMSestro", "inserted to smsmRefFolder=" + dbHelper.insertSMSRefFolder(ref) + "sms_id:" + ref.getId_SMS() + "folder_name=" + name_f);
+
+                                }
+                            cursor.moveToNext();
+                            }
+                            cursor.close();
+
+                        }
+                    }
                 c.moveToNext();
+                }
+                c.close();
             }
-        }
-        c.close();
 
- //now - let's handle clicking on folders list
+        //c.close();
+
+        //now - let's handle clicking on folders list
         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
@@ -136,7 +202,7 @@ Log.e("MaSMSestro","insertedSMS="+sms_id);
 
                 if (FolderList.get(pos).equals("Incoming")) {
 
-                    Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
                     intent.putExtra(EXTRA_MESSAGE, FolderList.get(pos));
                     startActivity(intent);
                 }
@@ -183,7 +249,7 @@ Log.e("MaSMSestro","insertedSMS="+sms_id);
                                             @Override
                                             public void onClick(View view) {
                                                 EditText editText = (EditText) findViewById(R.id.edtFolderName);
-                                                String s =  editText.getText().toString();
+                                                String s = editText.getText().toString();
                                                 if (!s.isEmpty()) {
                                                     //let's check whether folder with the same name exists in DB
                                                     if (dbHelper.getFolderByName(s) == -1) {

@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
+
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/list_item"
+        android:id="@+id/list_conv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
         android:background="@color/colorListItem"
         android:checked="false"
+        android:drawableLeft="@mipmap/ic_launcher"
+        android:drawableStart="@mipmap/ic_launcher"
         android:elegantTextHeight="true"
-        android:ellipsize="start"
+
+
+        android:maxLines="2"
         android:textColor="@color/colorWhite"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:theme="@style/AppTheme.PopupOverlay"
+  />

@@ -4,10 +4,10 @@ package mg.masmsestro;
  * Created by magda on 2017-03-19.
  */
 
-public class SMSRefFolder {
+public class ConvRefFolder {
 
     private Integer id_ref;
-    private Integer id_SMS;
+    private Integer id_Conv;
     private Integer id_folder;
 
     public Integer getId_ref() {
@@ -18,12 +18,12 @@ public class SMSRefFolder {
         this.id_ref = id_ref;
     }
 
-    public Integer getId_SMS() {
-        return id_SMS;
+    public Integer getId_Conv() {
+        return id_Conv;
     }
 
-    public void setId_SMS(Integer id_SMS) {
-        this.id_SMS = id_SMS;
+    public void setId_Conv(Integer id_Conv) {
+        this.id_Conv = id_Conv;
     }
 
     public Integer getId_folder() {

@@ -11,26 +11,26 @@ public class SMS {
     private Integer sms_id;
     private String tel_no;
     private String content;
-    private Date date_sent;
-    private Date date_received;
+    private long date_sent;
+    private long date_received;
     private String read;
     private String seen;
     private String person;
     private int thread_id;
 
-    public Date getDate_sent() {
+    public long getDate_sent() {
         return date_sent;
     }
 
-    public void setDate_sent(Date date_sent) {
+    public void setDate_sent(long date_sent) {
         this.date_sent = date_sent;
     }
 
-    public Date getDate_received() {
+    public long getDate_received() {
         return date_received;
     }
 
-    public void setDate_received(Date date_received) {
+    public void setDate_received(long date_received) {
         this.date_received = date_received;
     }
 
