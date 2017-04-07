@@ -121,7 +121,9 @@ private ListView SMSFolders;
                             name_f = "folder not found=" + ref.getId_folder();
                         }
 
-                        Log.e("MaSMSestro", "inserted to ConvRefFolder=" + dbHelper.insertConvRefFolder(ref) + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
+                        long id_ref=dbHelper.insertConvRefFolder(ref);
+
+                        Log.e("MaSMSestro", "inserted to ConvRefFolder=" + id_ref + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
 
                     }
 
@@ -162,21 +164,6 @@ private ListView SMSFolders;
                                 Log.e("MaSMSestro", "sms doesnt exist");
                                 long sms_id = dbHelper.insertSMS(sms);
                                 Log.e("MaSMSestro", "insertedSMS=" + sms_id);
-/*
-                                if (sms_id != -1) {
-                                    SMSRefFolder ref = new SMSRefFolder();
-                                    ref.setId_folder(dbHelper.getFolderByName("Incoming"));
-                                    ref.setId_SMS((int) sms_id);
-
-                                    Folder f = dbHelper.getFolderById(ref.getId_folder());
-                                    String name_f = "";
-                                    if (f != null) {
-                                        name_f = f.getName();
-                                    } else {
-                                        name_f = "folder not found=" + ref.getId_folder();
-                                    }
-*/
-                                    //Log.e("MaSMSestro", "inserted to smsmRefFolder=" + dbHelper.insertSMSRefFolder(ref) + "sms_id:" + ref.getId_SMS() + "folder_name=" + name_f);
 
                                 }
                             cursor.moveToNext();
@@ -190,22 +177,15 @@ private ListView SMSFolders;
                 c.close();
             }
 
-        //c.close();
-
         //now - let's handle clicking on folders list
         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
-                Toast.makeText(getApplicationContext(), FolderList.get(pos), Toast.LENGTH_LONG).show();
-
-                Log.e("MaSMSestro", FolderList.get(pos));
-
-                if (FolderList.get(pos).equals("Incoming")) {
 
                     Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
                     intent.putExtra(EXTRA_MESSAGE, FolderList.get(pos));
                     startActivity(intent);
-                }
+
             }
         });
 
