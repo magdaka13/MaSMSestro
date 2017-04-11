@@ -23,5 +23,6 @@
     <string name="delete">Delete</string>
     <string name="user_settings">User settings</string>
     <string name="edit_folder">Edit Folder</string>
+    <string name="title_activity_sms">SMS</string>
 
 </resources>

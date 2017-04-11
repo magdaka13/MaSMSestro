@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "";
     private List<String> FolderList = new ArrayList<>();
     private DBHelper dbHelper;
-private ListView SMSFolders;
+    private ListView SMSFolders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

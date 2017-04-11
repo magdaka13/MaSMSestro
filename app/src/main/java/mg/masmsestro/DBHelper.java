@@ -196,7 +196,7 @@ String content;
         List<Conversation> conversation_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) order by date desc";
+        String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) group by thread_id order by date desc";
         Log.e("MaSMSestro","sql="+sql_str);
         Cursor res = db.rawQuery(sql_str, null);
         res.moveToFirst();
@@ -207,6 +207,7 @@ String content;
                 s.setConv_id(res.getInt(res.getColumnIndex("conv_id")));
                 s.setRecipient_list(res.getString(res.getColumnIndex("recipient_list")));
                 s.setSnippet(res.getString(res.getColumnIndex("snippet")));
+                s.setThread_id(res.getInt(res.getColumnIndex("thread_id")));
                 conversation_list.add(s);
 
             res.moveToNext();
@@ -283,6 +284,30 @@ public long insertConversation(Conversation s) {
         }
 
     }
+
+    public List<String> getAllSMSByThread(Integer thread_id) {
+         List<String> SMS_List=new ArrayList<String>();
+         String sms_string;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql_string="select * from sms where thread_id="+thread_id+" order by date_received desc";
+
+        Log.e("MaSMSestro","getSMS - sql="+sql_string);
+
+        Cursor res = db.rawQuery(sql_string,null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            sms_string = res.getString(res.getColumnIndex("tel_no")) + "\n" + res.getString(res.getColumnIndex("content"));
+            SMS_List.add(sms_string);
+            res.moveToNext();
+        }
+
+            res.close();
+return SMS_List;
+    }
+
 
     public int numberOfRowsSMS() {
         SQLiteDatabase db = this.getReadableDatabase();

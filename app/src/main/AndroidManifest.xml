@@ -3,12 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="mg.masmsestro">
 
-
-     <uses-permission android:name="android.permission.SEND_SMS"/>
-     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-     <uses-permission android:name="android.permission.READ_SMS" />
-
-
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
 
     <application
         android:allowBackup="true"
@@ -22,39 +19,46 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".EditFolder"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.MainActivity" />
         </activity>
-
-
         <activity
             android:name=".DeleteFolder"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.MainActivity" />
         </activity>
-
         <activity
             android:name=".ConversationActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter tools:ignore="GoogleAppIndexingWarning">
-                <action android:name="android.intent.action.VIEW" />
-            </intent-filter>
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.MainActivity" />
 
+        </activity>
+        <activity
+            android:name=".SMSActivity"
+            android:label="@string/title_activity_sms"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

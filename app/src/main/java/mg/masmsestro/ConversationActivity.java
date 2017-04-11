@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -22,6 +23,8 @@ public class ConversationActivity extends AppCompatActivity {
 
     private List<Conversation> ConversationList;
     private List<String> ConversationList_string =new ArrayList<>();
+    private ListView ConversationItems;
+    public static final String EXTRA_MESSAGE = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +57,27 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
         }
 
         if (ConversationList_string.size()>0) {
-            ListView ConversationItems = (ListView) findViewById(R.id.ConversationList);
+            ConversationItems = (ListView) findViewById(R.id.ConversationList);
             ArrayAdapter a = new ArrayAdapter<String>(
                     getApplicationContext(),
                     R.layout.my_list_item_conversation, ConversationList_string
             );
             ConversationItems.setAdapter(a);
+
+            //now - let's handle clicking on conversation list
+            ConversationItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+
+                    Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                    intent.putExtra(EXTRA_MESSAGE, ConversationList.get(pos).getThread_id().toString());
+                    startActivity(intent);
+
+                }
+            });
+
+
         }
-
-
 
 
         FloatingActionButton NewSMS = (FloatingActionButton) findViewById(R.id.NewSMS);

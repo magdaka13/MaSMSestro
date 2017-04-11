@@ -5,20 +5,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="mg.masmsestro.ConversationActivity"
-    tools:showIn="@layout/conversation_list_layout">
+    tools:context="mg.masmsestro.SMSActivity"
+    tools:showIn="@layout/activity_sms">
 
 
     <ListView
-        android:id="@+id/ConversationList"
+        android:id="@+id/SMSList"
         style="@style/Widget.AppCompat.ListView.Menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:choiceMode="none"
         android:scrollbars="horizontal"
         android:visibility="visible"
+        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp"
-        tools:ignore="MissingConstraints" />
+        tools:layout_editor_absoluteY="8dp" />
 
 
 </android.support.constraint.ConstraintLayout>
