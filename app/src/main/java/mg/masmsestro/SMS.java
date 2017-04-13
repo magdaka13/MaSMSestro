@@ -17,6 +17,7 @@ public class SMS {
     private String seen;
     private String person;
     private int thread_id;
+    private int type;
 
     public long getDate_sent() {
         return date_sent;
@@ -89,4 +90,13 @@ public class SMS {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 }
+

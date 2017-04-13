@@ -17,7 +17,7 @@ public class SMSActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private List<String> SMSList_string=new ArrayList<String>();
     private ListView SMSList_view;
-
+private ArrayAdapter a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +37,19 @@ public class SMSActivity extends AppCompatActivity {
 
 
         SMSList_view = (ListView) findViewById(R.id.SMSList);
-        ArrayAdapter a = new ArrayAdapter<>(
+        a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, SMSList_string
         );
         SMSList_view.setAdapter(a);
 
+            SMSList_view.post(new Runnable() {
+                @Override
+                public void run() {
+                    // Select the last row so it will scroll into view...
+                    SMSList_view.setSelection(a.getCount() - 1);
+                }
+            });
     }
 
 }

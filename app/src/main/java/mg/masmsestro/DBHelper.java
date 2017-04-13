@@ -17,7 +17,7 @@ class DBHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "SMSDB.db";
 
     public DBHelper(Context context) {
-        super(context, DATABASE_NAME, null, 2);
+        super(context, DATABASE_NAME, null, 3);
     }
 
     @Override
@@ -33,7 +33,7 @@ class DBHelper extends SQLiteOpenHelper {
 
         db.execSQL("create table if not exists folder (id integer primary key, name text)");
         db.execSQL("create table if not exists conversation (conv_id integer primary key, recipient_list text, snippet text,thread_id int,date long,read integer,seen integer)");
-        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received long,date_sent long,read integer,seen integer,person text,thread_id integer)");
+        db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received long,date_sent long,read integer,seen integer,person text,thread_id integer,type integer)");
         db.execSQL("create table if not exists rule (id_rule integer primary key, rule text,id_folder integer)");
         db.execSQL("create table if not exists settings (id_settings integer primary key, name text,value text)");
         db.execSQL("create table if not exists convReffolder (id_ref integer primary key, id_conv integer,id_folder integer)");
@@ -196,7 +196,7 @@ String content;
         List<Conversation> conversation_list = new ArrayList<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
-        String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) group by thread_id order by date desc";
+        String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) group by thread_id,recipient_list order by date desc";
         Log.e("MaSMSestro","sql="+sql_str);
         Cursor res = db.rawQuery(sql_str, null);
         res.moveToFirst();
@@ -254,6 +254,7 @@ public long insertConversation(Conversation s) {
         contentValues.put("seen", s.getSeen());
         contentValues.put("person", s.getPerson());
         contentValues.put("thread_id", s.getThread_id());
+        contentValues.put("type",s.getType());
 
         return db.insert("sms", null, contentValues);
     }
@@ -291,7 +292,7 @@ public long insertConversation(Conversation s) {
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String sql_string="select * from sms where thread_id="+thread_id+" order by date_received desc";
+        String sql_string="select * from sms where thread_id="+thread_id+" order by date_received asc";
 
         Log.e("MaSMSestro","getSMS - sql="+sql_string);
 
@@ -299,7 +300,7 @@ public long insertConversation(Conversation s) {
         res.moveToFirst();
 
         while (!res.isAfterLast()) {
-            sms_string = res.getString(res.getColumnIndex("tel_no")) + "\n" + res.getString(res.getColumnIndex("content"));
+            sms_string = res.getString(res.getColumnIndex("tel_no"))+"\n" +res.getString(res.getColumnIndex("content"));
             SMS_List.add(sms_string);
             res.moveToNext();
         }

@@ -40,11 +40,11 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         dbHelper = new DBHelper(getApplicationContext());
-        //dbHelper.onUpgrade(dbHelper.getWritableDatabase(),1,2);
+
 
 //first read all folders
         Integer no = dbHelper.numberOfRowsFolder();
-//        Log.e("MaSMSestro", no.toString());
+
 
         if (no == 0) {
             Folder f = new Folder();
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         Uri uri = Uri.parse("content://mms-sms/conversations/");
-        Cursor c = getContentResolver().query(uri, projection, null, null, null);
+        Cursor c = getContentResolver().query(uri, projection, null, null, "date DESC");
 
 
         // Read the sms data and store it in the list
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                  else  //sms
                     {
-                    String selection = "_id = "+id;
+                    String selection = "thread_id = "+conv.getThread_id();
                     Uri uri1 = Uri.parse("content://sms");
                     Cursor cursor = getContentResolver().query(uri1, null, selection, null, null);
 
@@ -151,8 +151,9 @@ public class MainActivity extends AppCompatActivity {
                             sms.setSeen(cursor.getString(cursor.getColumnIndexOrThrow("seen")));
                             sms.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
                             sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
+                            sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
 
-                            Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id());
+                            Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
 
                             SMS sms1 = dbHelper.getSMS(sms);
                             if (sms1 != null) {
