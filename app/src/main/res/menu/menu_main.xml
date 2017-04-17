@@ -27,8 +27,15 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_rules"
         android:orderInCategory="104"
+        android:title="@string/show_filtering_rules"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="105"
         android:title="@string/user_settings"
         app:showAsAction="never" />
 

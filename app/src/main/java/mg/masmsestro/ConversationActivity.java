@@ -1,9 +1,11 @@
 package mg.masmsestro;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -12,7 +14,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.content.Context;
 
 import java.util.List;
 
@@ -25,6 +30,9 @@ public class ConversationActivity extends AppCompatActivity {
     private List<String> ConversationList_string =new ArrayList<>();
     private ListView ConversationItems;
     public static final String EXTRA_MESSAGE = "";
+    private final Context context = this;
+private Dialog d;
+    private ArrayAdapter a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +44,7 @@ public class ConversationActivity extends AppCompatActivity {
         setTitle(" MaSMSestro->" + folder_name);
 
         setContentView(R.layout.conversation_list_layout);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarConv);
         setSupportActionBar(toolbar);
 
         DBHelper dbHelper=new DBHelper(getApplicationContext());
@@ -58,7 +66,7 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
 
         if (ConversationList_string.size()>0) {
             ConversationItems = (ListView) findViewById(R.id.ConversationList);
-            ArrayAdapter a = new ArrayAdapter<String>(
+            a = new ArrayAdapter<String>(
                     getApplicationContext(),
                     R.layout.my_list_item_conversation, ConversationList_string
             );
@@ -93,19 +101,50 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sms, menu);
+        getMenuInflater().inflate(R.menu.menu_conv, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
+d=new Dialog(context); // Context, this, etc.
+
+            d.setTitle(R.string.action_search);
+            d.setContentView(R.layout.search_dialog);
+            d.setCancelable(true);
+            d.show();
+
+
+            Button btnCancel = (Button) d.findViewById(R.id.dialog_cancel);
+            // if button is clicked, close the custom dialog
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ConversationActivity.this.a.getFilter().filter("");
+                    d.cancel();
+
+                }
+            });
+
+            Button btnSearch = (Button) d.findViewById(R.id.btn_search);
+            // if button is clicked, close the custom dialog
+            btnSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText e=(EditText)d.findViewById(R.id.str_to_search);
+                    ConversationActivity.this.a.getFilter().filter(e.getText());
+                    d.cancel();
+                }
+            });
+
             return true;
         }
 
