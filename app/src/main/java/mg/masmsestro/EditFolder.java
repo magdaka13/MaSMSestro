@@ -2,6 +2,7 @@ package mg.masmsestro;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -28,6 +29,8 @@ public class EditFolder extends AppCompatActivity {
         setTitle(" MaSMSestro-> Edit Folder");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolder);
         setSupportActionBar(toolbar);
+ActionBar ab=getSupportActionBar();
+        ab.setDefaultDisplayHomeAsUpEnabled(true);
 
         dbHelper = new DBHelper(getApplicationContext());
         FolderList = dbHelper.getAllFoldersNames();

@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -39,6 +40,9 @@ public class DeleteFolder extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolderDelete);
         setSupportActionBar(toolbar);
+        ActionBar ab=getSupportActionBar();
+        ab.setDefaultDisplayHomeAsUpEnabled(true);
+
         setTitle(" MaSMSestro-> Delete Folder");
 
         dbHelper = new DBHelper(getApplicationContext());
