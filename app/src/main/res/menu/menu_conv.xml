@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="mg.masmsestro.ConversationActivity">
     <item
-        android:id="@+id/action_search"
+        android:id="@+id/action_search_sms"
         android:orderInCategory="100"
-        android:title="@string/action_search"
+        android:title= "@string/search_sms"
         app:showAsAction="never" />
 
     <item

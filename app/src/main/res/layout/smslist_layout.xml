@@ -1,19 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="mg.masmsestro.SMSActivity"
-    tools:showIn="@layout/activity_sms">
+    tools:context="mg.masmsestro.SMSActivity">
 
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay"
+        tools:layout_editor_absoluteX="8dp"
+        tools:layout_editor_absoluteY="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbarSMS"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:clickable="true"
+            android:elevation="0dp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            tools:ignore="UnusedAttribute" />
+
+    </android.support.design.widget.AppBarLayout>
 
     <ListView
         android:id="@+id/SMSList"
         style="@style/Widget.AppCompat.ListView.Menu"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:choiceMode="none"
         android:scrollbars="horizontal"
         android:visibility="visible"
@@ -22,4 +40,4 @@
         tools:layout_editor_absoluteY="8dp" />
 
 
-</android.support.constraint.ConstraintLayout>
+    </android.support.design.widget.CoordinatorLayout>

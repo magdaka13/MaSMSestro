@@ -1,5 +1,6 @@
 package mg.masmsestro;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.content.Context;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +33,9 @@ public class MainActivity extends AppCompatActivity {
     private List<String> FolderList = new ArrayList<>();
     private DBHelper dbHelper;
     private ListView SMSFolders;
+private Dialog d;
+    private ArrayAdapter a;
+private Context context=this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a = new ArrayAdapter<>(
+        a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, FolderList
         );
@@ -96,17 +101,17 @@ public class MainActivity extends AppCompatActivity {
                 //conv.setSeen(seen);
 
 
-                Log.e("MaSMSestro", ":conversaion -> recipient=" + conv.getRecipient_list() +  ");snippet=" + conv.getSnippet() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(conv.getDate()))  + ";read=" + conv.getRead() + ";seen=" + conv.getSeen() + ";thread=" + conv.getThread_id());
-                Conversation conv1 = dbHelper.getConversation(conv);
+  //              Log.e("MaSMSestro", ":conversaion -> recipient=" + conv.getRecipient_list() +  ");snippet=" + conv.getSnippet() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(conv.getDate()))  + ";read=" + conv.getRead() + ";seen=" + conv.getSeen() + ";thread=" + conv.getThread_id());
+/*                Conversation conv1 = dbHelper.getConversation(conv);
                 if (conv1 != null) {
                     long z = dbHelper.deleteConversation(conv1);
                     Log.e("MaSMSestro", "deleted=" + z);
                 }
-
+*/
                 if (dbHelper.getConversation(conv) == null) {
-                    Log.e("MaSMSestro", "conv doesnt exist");
+                   // Log.e("MaSMSestro", "conv doesnt exist");
                     long conv_id = dbHelper.insertConversation(conv);
-                    Log.e("MaSMSestro", "insertedConversation=" + conv_id);
+                   // Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
                     if (conv_id != -1) {
                         ConvRefFolder ref = new ConvRefFolder();
@@ -114,16 +119,17 @@ public class MainActivity extends AppCompatActivity {
                         ref.setId_Conv((int) conv_id);
 
                         Folder f = dbHelper.getFolderById(ref.getId_folder());
-                        String name_f = "";
+                       /* String name_f = "";
                         if (f != null) {
                             name_f = f.getName();
                         } else {
                             name_f = "folder not found=" + ref.getId_folder();
                         }
+                        */
 
                         long id_ref=dbHelper.insertConvRefFolder(ref);
 
-                        Log.e("MaSMSestro", "inserted to ConvRefFolder=" + id_ref + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
+                     //   Log.e("MaSMSestro", "inserted to ConvRefFolder=" + id_ref + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
 
                     }
 
@@ -153,18 +159,18 @@ public class MainActivity extends AppCompatActivity {
                             sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
                             sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
 
-                            Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
-
+      //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
+/*
                             SMS sms1 = dbHelper.getSMS(sms);
                             if (sms1 != null) {
                                 long z = dbHelper.deleteSMS(sms1);
                                 Log.e("MaSMSestro", "deleted=" + z);
                             }
-
+*/
                             if (dbHelper.getSMS(sms) == null) {
-                                Log.e("MaSMSestro", "sms doesnt exist");
+  //                              Log.e("MaSMSestro", "sms doesnt exist");
                                 long sms_id = dbHelper.insertSMS(sms);
-                                Log.e("MaSMSestro", "insertedSMS=" + sms_id);
+    //                            Log.e("MaSMSestro", "insertedSMS=" + sms_id);
 
                                 }
                             cursor.moveToNext();
@@ -184,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
 
                     Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, FolderList.get(pos));
+                    intent.putExtra(EXTRA_MESSAGE, SMSFolders.getItemAtPosition(pos).toString());
                     startActivity(intent);
 
             }
@@ -199,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         ListView SMSFolders = (ListView) findViewById(R.id.SMSFolderList);
-        ArrayAdapter a = new ArrayAdapter<>(
+        a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, FolderList
         );
@@ -280,6 +286,41 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(getApplicationContext(), DeleteFolder.class);
             startActivity(intent);
 
+        }
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_search) {
+            d=new Dialog(context); // Context, this, etc.
+
+            d.setTitle(R.string.action_search);
+            d.setContentView(R.layout.search_dialog);
+            d.setCancelable(true);
+            d.show();
+
+
+            Button btnCancel = (Button) d.findViewById(R.id.dialog_cancel);
+            // if button is clicked, close the custom dialog
+            btnCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    MainActivity.this.a.getFilter().filter("");
+                    d.cancel();
+
+                }
+            });
+
+            Button btnSearch = (Button) d.findViewById(R.id.btn_search);
+            // if button is clicked, close the custom dialog
+            btnSearch.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EditText e=(EditText)d.findViewById(R.id.str_to_search);
+                    MainActivity.this.a.getFilter().filter(e.getText());
+                    d.cancel();
+                }
+            });
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

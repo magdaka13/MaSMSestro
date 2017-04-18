@@ -13,7 +13,7 @@
         android:id="@+id/ConversationList"
         style="@style/Widget.AppCompat.ListView.Menu"
         android:layout_width="368dp"
-        android:layout_height="551dp"
+        android:layout_height="wrap_content"
         android:scrollbars="horizontal"
         android:textFilterEnabled="true"
         android:visibility="visible"

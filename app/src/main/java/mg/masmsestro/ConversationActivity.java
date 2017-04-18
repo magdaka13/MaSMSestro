@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,7 +29,8 @@ public class ConversationActivity extends AppCompatActivity {
     private List<Conversation> ConversationList;
     private List<String> ConversationList_string =new ArrayList<>();
     private ListView ConversationItems;
-    public static final String EXTRA_MESSAGE = "";
+    public static final String THREAD_ID_STRING = "";
+    public static final String SMS_KEYWORD_STRING = "";
     private final Context context = this;
 private Dialog d;
     private ArrayAdapter a;
@@ -46,6 +47,8 @@ private Dialog d;
         setContentView(R.layout.conversation_list_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarConv);
         setSupportActionBar(toolbar);
+        ActionBar ab=getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
 
         DBHelper dbHelper=new DBHelper(getApplicationContext());
         ConversationList=dbHelper.getAllConversationbyFolderName(folder_name);
@@ -78,7 +81,10 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
                 public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
 
                     Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, ConversationList.get(pos).getThread_id().toString());
+                    Bundle extras=new Bundle();
+                    extras.putString("THREAD_ID_STRING", ConversationList.get(pos).getThread_id().toString());
+                    extras.putString("SMS_KEYWORD_STRING", "");
+                    intent.putExtras(extras);
                     startActivity(intent);
 
                 }
@@ -114,7 +120,7 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
+        if (id == R.id.action_search_sms) {
 d=new Dialog(context); // Context, this, etc.
 
             d.setTitle(R.string.action_search);
@@ -140,8 +146,17 @@ d=new Dialog(context); // Context, this, etc.
                 @Override
                 public void onClick(View v) {
                     EditText e=(EditText)d.findViewById(R.id.str_to_search);
-                    ConversationActivity.this.a.getFilter().filter(e.getText());
-                    d.cancel();
+//                    ConversationActivity.this.a.getFilter().filter(e.getText());
+                 //   d.cancel();
+
+                    Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
+                    Bundle extras=new Bundle();
+                    extras.putString("THREAD_ID_STRING", "");
+                    extras.putString("SMS_KEYWORD_STRING", e.getText().toString());
+                    intent.putExtras(extras);
+                    startActivity(intent);
+
+                    //                   d.cancel();
                 }
             });
 

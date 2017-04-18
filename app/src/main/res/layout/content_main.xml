@@ -12,10 +12,11 @@
     <ListView
         android:id="@+id/SMSFolderList"
         style="@style/Widget.AppCompat.ListView.Menu"
-        android:layout_width="match_parent"
+        android:layout_width="368dp"
         android:layout_height="551dp"
         android:choiceMode="none"
         android:scrollbars="horizontal"
+        android:textFilterEnabled="true"
         android:visibility="visible"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="8dp"
