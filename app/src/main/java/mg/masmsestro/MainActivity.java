@@ -190,7 +190,10 @@ private Context context=this;
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
 
                     Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
-                    intent.putExtra(EXTRA_MESSAGE, SMSFolders.getItemAtPosition(pos).toString());
+                Bundle extras=new Bundle();
+                extras.putString("FOLDER_NAME", SMSFolders.getItemAtPosition(pos).toString());
+                intent.putExtras(extras);
+
                     startActivity(intent);
 
             }

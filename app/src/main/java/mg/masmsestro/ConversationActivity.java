@@ -31,8 +31,9 @@ public class ConversationActivity extends AppCompatActivity {
     private ListView ConversationItems;
     public static final String THREAD_ID_STRING = "";
     public static final String SMS_KEYWORD_STRING = "";
+    public static String folder_name = "";
     private final Context context = this;
-private Dialog d;
+    private Dialog d;
     private ArrayAdapter a;
 
     @Override
@@ -40,7 +41,11 @@ private Dialog d;
         super.onCreate(savedInstanceState);
         // Get the Intent that started this activity and extract the string
         Intent intent = getIntent();
-        String folder_name = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+        Bundle ex=intent.getExtras();
+        folder_name=ex.getString("FOLDER_NAME");
+
+
+
 
         setTitle(" MaSMSestro->" + folder_name);
 
@@ -119,9 +124,8 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_search_sms) {
-d=new Dialog(context); // Context, this, etc.
+            d=new Dialog(context); // Context, this, etc.
 
             d.setTitle(R.string.action_search);
             d.setContentView(R.layout.search_dialog);
@@ -130,7 +134,6 @@ d=new Dialog(context); // Context, this, etc.
 
 
             Button btnCancel = (Button) d.findViewById(R.id.dialog_cancel);
-            // if button is clicked, close the custom dialog
             btnCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -141,14 +144,10 @@ d=new Dialog(context); // Context, this, etc.
             });
 
             Button btnSearch = (Button) d.findViewById(R.id.btn_search);
-            // if button is clicked, close the custom dialog
             btnSearch.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EditText e=(EditText)d.findViewById(R.id.str_to_search);
-//                    ConversationActivity.this.a.getFilter().filter(e.getText());
-                 //   d.cancel();
-
                     Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
                     Bundle extras=new Bundle();
                     extras.putString("THREAD_ID_STRING", "");
@@ -156,11 +155,21 @@ d=new Dialog(context); // Context, this, etc.
                     intent.putExtras(extras);
                     startActivity(intent);
 
-                    //                   d.cancel();
                 }
             });
 
             return true;
+        }
+
+        if (id == R.id.action_move_conversation) {
+            Log.e("MaSMSestro","Move conversation");
+
+            Intent intent = new Intent(getApplicationContext(), ConversationMoveActivity.class);
+            Bundle extras=new Bundle();
+            extras.putString("FOLDER_NAME", folder_name);
+            intent.putExtras(extras);
+            startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

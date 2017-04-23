@@ -31,5 +31,6 @@
     <string name="title_activity_sms">SMS</string>
     <string name="show_filtering_rules">Show filtering rules</string>
     <string name="search_sms">Search SMS</string>
+    <string name="choose_destination_folder">Choose destination Folder:</string>
 
 </resources>

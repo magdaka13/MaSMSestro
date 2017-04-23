@@ -197,7 +197,7 @@ String content;
 
         SQLiteDatabase db = this.getReadableDatabase();
         String sql_str="select * from conversation where conv_id in (select conv_id from convReffolder where id_folder in (select id from folder where name='"+folder_name+"')) group by thread_id,recipient_list order by date desc";
-  //      Log.e("MaSMSestro","sql="+sql_str);
+        Log.e("MaSMSestro","sql="+sql_str);
         Cursor res = db.rawQuery(sql_str, null);
         res.moveToFirst();
 
@@ -237,6 +237,14 @@ public long insertConversation(Conversation s) {
         return db.delete("conversation", "conv_id = ? ", new String[]{Integer.toString(s.getConv_id())});
     }
 
+
+    public int moveConversationToFolder(String folder_name,int conv_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("id_folder",getFolderByName(folder_name) );
+        return db.update("convReffolder", contentValues, "id_conv = ? ", new String[]{Integer.toString(conv_id)});
+
+    }
 
 /*Conversation table - end*/
 
@@ -355,8 +363,9 @@ return SMS_List;
     public Cursor deleteAllSMS(Folder f) {
         Cursor c;
         SQLiteDatabase db = this.getWritableDatabase();
-        db.rawQuery("delete from sms where sms_id in (select id_SMS from smsReffolder where id_folder="+f.getId()+")",null);
-        c=db.rawQuery("delete from smsReffolder where id_folder="+f.getId(),null);
+        String sql_str="delete from sms where thread_id in (select thread_id from conversation where conv_id in (select id_conv from convReffolder where id_folder ="+f.getId()+"))";
+        db.rawQuery(sql_str,null);
+        c=db.rawQuery("delete from convReffolder where id_folder="+f.getId(),null);
         return c;
     }
 /*
