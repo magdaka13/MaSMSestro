@@ -355,9 +355,9 @@ return SMS_List;
 
     }
 
-    public Integer deleteSMS(SMS s) {
+    public Integer deleteSMS(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete("sms", "sms_id = ? ", new String[]{Integer.toString(s.getSms_id())});
+        return db.delete("sms", "sms_id = ? ", new String[]{Integer.toString(id)});
     }
 
     public Cursor deleteAllSMS(Folder f) {
@@ -368,7 +368,16 @@ return SMS_List;
         c=db.rawQuery("delete from convReffolder where id_folder="+f.getId(),null);
         return c;
     }
-/*
+
+    public Cursor deleteAllSMSFromConv(Conversation conv) {
+        Cursor c;
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sql_str="delete from sms where thread_id in (select thread_id from conversation where conv_id ="+conv.getConv_id()+")";
+        c=db.rawQuery(sql_str,null);
+        return c;
+    }
+
+    /*
     public Cursor moveSMSToIncoming(Folder f) {
         Cursor c;
         SQLiteDatabase db = this.getWritableDatabase();

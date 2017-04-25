@@ -64,8 +64,8 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             String snippet;
             snippet = ConversationList.get(i).getSnippet();
 
-           String conversation_short=ConversationList.get(i).getRecipient_list()+System.getProperty("line.separator")+snippet;
-            if ((ConversationList.get(i).getRecipient_list()!=null) && (snippet!=null))
+           String conversation_short=ConversationList.get(i).getConv_id()+" "+ConversationList.get(i).getRecipient_list()+System.getProperty("line.separator")+snippet;
+            //if ((ConversationList.get(i).getRecipient_list()!=null) && (snippet!=null))
             {
                 ConversationList_string.add(conversation_short);
             }
@@ -170,6 +170,19 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             intent.putExtras(extras);
             startActivity(intent);
 
+            return true;
+        }
+
+        if (id == R.id.action_delete_conversation) {
+            Log.e("MaSMSestro","Delete conversation");
+
+            Intent intent = new Intent(getApplicationContext(), ConversationDeleteActivity.class);
+            Bundle extras=new Bundle();
+            extras.putString("FOLDER_NAME", folder_name);
+            intent.putExtras(extras);
+            startActivity(intent);
+
+            return true;
         }
 
         return super.onOptionsItemSelected(item);
