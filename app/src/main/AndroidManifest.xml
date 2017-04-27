@@ -82,6 +82,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.ConversationActivity" />
         </activity>
+
+
+
+    <activity
+        android:name="mg.masmsestro.AndroidDatabaseManager"
+        android:theme="@style/AppTheme.NoActionBar"
+        android:label="@string/app_name">
+    </activity>
+
     </application>
 
 </manifest>

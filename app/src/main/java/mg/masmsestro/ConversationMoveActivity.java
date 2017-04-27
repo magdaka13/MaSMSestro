@@ -57,7 +57,7 @@ private String folder_name;
         ConversationList=dbHelper.getAllConversationbyFolderName(folder_name);
         Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
 
-
+        ConversationList_string.clear();
         for (int i=0;i<ConversationList.size();i++) {
 
             String snippet;
@@ -89,7 +89,7 @@ private String folder_name;
                     selected=pos;
                     d=new Dialog(context); // Context, this, etc.
 
-                    d.setTitle(R.string.action_search);
+                    d.setTitle("Move");
                     d.setContentView(R.layout.move_dialog);
                     d.setCancelable(true);
                     d.show();
@@ -164,6 +164,7 @@ d.dismiss();
         Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
 
 
+        ConversationList_string.clear();
         for (int i=0;i<ConversationList.size();i++) {
 
             String snippet;
