@@ -239,6 +239,13 @@ public long insertConversation(Conversation s) {
         return db.delete("conversation", "conv_id = ? ", new String[]{Integer.toString(s.getConv_id())});
     }
 
+    public Integer deleteAllConversation() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("sms",null,null);
+        return db.delete("conversation", null, null);
+
+    }
+
 
     public int moveConversationToFolder(String folder_name,int conv_id) {
         SQLiteDatabase db = this.getWritableDatabase();

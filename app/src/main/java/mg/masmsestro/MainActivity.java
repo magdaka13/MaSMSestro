@@ -70,6 +70,8 @@ private Context context=this;
         );
         SMSFolders.setAdapter(a);
 
+       // dbHelper.deleteAllConversation();
+
         if (dbHelper.numberOfRowsSMS()==0)
         {
             SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();

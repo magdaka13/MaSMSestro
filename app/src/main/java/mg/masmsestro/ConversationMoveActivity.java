@@ -80,14 +80,14 @@ private String folder_name;
                     R.layout.my_list_item_conversation_move, ConversationList_string
             );
             ConversationItems.setAdapter(a);
-        }
+
             //now - let's handle clicking on conversation list
             ConversationItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> p, final View v, int pos, long id) {
 
-                    selected=pos;
-                    d=new Dialog(context); // Context, this, etc.
+                    selected = pos;
+                    d = new Dialog(context); // Context, this, etc.
 
                     d.setTitle("Move");
                     d.setContentView(R.layout.move_dialog);
@@ -95,11 +95,11 @@ private String folder_name;
                     d.show();
 
 
-                    final Spinner s=(Spinner)d.findViewById(R.id.FolderName);
+                    final Spinner s = (Spinner) d.findViewById(R.id.FolderName);
                     FolderList = dbHelper.getAllFoldersNames();
 
 
-                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item,FolderList);
+                    ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
                     dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     s.setAdapter(dataAdapter);
 
@@ -108,7 +108,7 @@ private String folder_name;
                     btnCancel.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                         d.cancel();
+                            d.cancel();
 
                         }
                     });
@@ -117,14 +117,14 @@ private String folder_name;
                     btnOK.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            Log.e("MaSMSestro","folder="+String.valueOf(s.getSelectedItem()));
-                            Log.e("MaSMSestro","conv_id="+ConversationList.get(selected).getConv_id());
-                            int a=dbHelper.moveConversationToFolder(String.valueOf(s.getSelectedItem()),ConversationList.get(selected).getConv_id());
-Log.e("MaSMSestro",  Integer.toString(a));
-d.dismiss();
+                            Log.e("MaSMSestro", "folder=" + String.valueOf(s.getSelectedItem()));
+                            Log.e("MaSMSestro", "conv_id=" + ConversationList.get(selected).getConv_id());
+                            int a = dbHelper.moveConversationToFolder(String.valueOf(s.getSelectedItem()), ConversationList.get(selected).getConv_id());
+                            Log.e("MaSMSestro", Integer.toString(a));
+                            d.dismiss();
 
                             Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
-                            Bundle extras=new Bundle();
+                            Bundle extras = new Bundle();
                             extras.putString("FOLDER_NAME", folder_name);
                             intent.putExtras(extras);
                             startActivity(intent);
@@ -135,7 +135,7 @@ d.dismiss();
 
                 }
             });
-
+        }
     }
 
     @Override

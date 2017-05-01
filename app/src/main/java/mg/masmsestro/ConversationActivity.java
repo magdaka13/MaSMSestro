@@ -39,11 +39,17 @@ public class ConversationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Get the Intent that started this activity and extract the string
-        Intent intent = getIntent();
-        Bundle ex=intent.getExtras();
-        folder_name=ex.getString("FOLDER_NAME");
 
+        try {
+            // Get the Intent that started this activity and extract the string
+            Intent intent = getIntent();
+            Bundle ex = intent.getExtras();
+            folder_name = ex.getString("FOLDER_NAME");
+        }
+        catch(Exception e)
+        {
+//do nothing
+        }
 
 
 
@@ -65,7 +71,7 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             snippet = ConversationList.get(i).getSnippet();
 
            String conversation_short=ConversationList.get(i).getConv_id()+" "+ConversationList.get(i).getRecipient_list()+System.getProperty("line.separator")+snippet;
-            //if ((ConversationList.get(i).getRecipient_list()!=null) && (snippet!=null))
+            if ((ConversationList.get(i).getRecipient_list()!=null) && (snippet!=null))
             {
                 ConversationList_string.add(conversation_short);
             }
@@ -180,11 +186,20 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             Bundle extras=new Bundle();
             extras.putString("FOLDER_NAME", folder_name);
             intent.putExtras(extras);
-            startActivity(intent);
+            startActivityForResult(intent,1);
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                folder_name = data.getStringExtra("FOLDER_NAME");
+            }
+        }
     }
 }

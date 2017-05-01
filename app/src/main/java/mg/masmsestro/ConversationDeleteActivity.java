@@ -52,13 +52,17 @@ private String folder_name;
         setContentView(R.layout.conversation_list_delete_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarConv);
         setSupportActionBar(toolbar);
-        ActionBar ab=getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
 
         dbHelper=new DBHelper(getApplicationContext());
         ConversationList=dbHelper.getAllConversationbyFolderName(folder_name);
         Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
 
+
+        // Get a support ActionBar corresponding to this toolbar
+        ActionBar ab = getSupportActionBar();
+
+        // Enable the Up button
+        ab.setDisplayHomeAsUpEnabled(true);
 
         for (int i=0;i<ConversationList.size();i++) {
 
@@ -110,7 +114,6 @@ private String folder_name;
 Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString());
 
                     }
-                  //  onResume();
 
 
                 }
@@ -134,7 +137,15 @@ Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString())
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        Intent intent = new Intent();
+        Bundle extras=new Bundle();
+        extras.putString("FOLDER_NAME", folder_name);
+        setResult(RESULT_OK,intent);
+        intent.putExtras(extras);
 
+        finish();
+
+        Log.e("MaSMSestro","onbackpressed...:"+folder_name);
         return super.onOptionsItemSelected(item);
     }
 
@@ -172,6 +183,16 @@ Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString())
 
     }
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
+        Bundle extras=new Bundle();
+        extras.putString("FOLDER_NAME", folder_name);
+        intent.putExtras(extras);
+        startActivity(intent);
+        Log.e("MaSMSestro","onbackpressed:"+folder_name);
+
+    }
 
     @Override
     public void onDestroy() {

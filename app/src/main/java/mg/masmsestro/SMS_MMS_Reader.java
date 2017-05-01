@@ -13,7 +13,6 @@ public class SMS_MMS_Reader {
 
     public void read_SMS_MMS(DBHelper dbHelper,Context context)
     {
-        //second - retreive smses and mmses from telephone and put them into DB
         //List<String> smsList = new ArrayList<>();
         final String[] projection = new String[]{"_id","ct_t","address","body","thread_id","date","read"};
 
@@ -51,58 +50,59 @@ public class SMS_MMS_Reader {
                     Log.e("MaSMSestro", "deleted=" + z);
                 }
 */
-                if (dbHelper.getConversation(conv) == null) {
-                    // Log.e("MaSMSestro", "conv doesnt exist");
-                    long conv_id = dbHelper.insertConversation(conv);
-                    // Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
-                    if (conv_id != -1) {
-                        ConvRefFolder ref = new ConvRefFolder();
-                        ref.setId_folder(dbHelper.getFolderByName("Incoming"));
-                        ref.setId_Conv((int) conv_id);
+           if ((conv.getRecipient_list()!=null) && (conv.getSnippet()!=null)) {
+               if (dbHelper.getConversation(conv) == null) {
+                   // Log.e("MaSMSestro", "conv doesnt exist");
+                   long conv_id = dbHelper.insertConversation(conv);
+                   // Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
-                        Folder f = dbHelper.getFolderById(ref.getId_folder());
-                        String name_f = "";
-                        if (f != null) {
-                            name_f = f.getName();
-                        } else {
-                            name_f = "folder not found=" + ref.getId_folder();
-                        }
+                   if (conv_id != -1) {
+                       ConvRefFolder ref = new ConvRefFolder();
+                       ref.setId_folder(dbHelper.getFolderByName("Incoming"));
+                       ref.setId_Conv((int) conv_id);
+
+                       Folder f = dbHelper.getFolderById(ref.getId_folder());
+                       String name_f = "";
+                       if (f != null) {
+                           name_f = f.getName();
+                       } else {
+                           name_f = "folder not found=" + ref.getId_folder();
+                       }
 
 
-                        long id_ref=dbHelper.insertConvRefFolder(ref);
+                       long id_ref = dbHelper.insertConvRefFolder(ref);
 
-                        Log.e("MaSMSestro", "inserted to ConvRefFolder=" + id_ref + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
+                       Log.e("MaSMSestro", "inserted to ConvRefFolder=" + id_ref + "conv_id:" + ref.getId_Conv() + "folder_name=" + name_f);
 
-                    }
+                   }
 
-                }
+               }
 
-                if ("application/vnd.wap.multipart.related".equals(string)) {
+               if ("application/vnd.wap.multipart.related".equals(string)) {
 
-                    //mms
-                    Log.e("MaSMSestro","MMS");
-                }
-                else  //sms
-                {
-                    String selection = "thread_id = "+conv.getThread_id();
-                    Uri uri1 = Uri.parse("content://sms");
-                    Cursor cursor = context.getContentResolver().query(uri1, null, selection, null, null);
+                   //mms
+                   Log.e("MaSMSestro", "MMS");
+               } else  //sms
+               {
+                   String selection = "thread_id = " + conv.getThread_id();
+                   Uri uri1 = Uri.parse("content://sms");
+                   Cursor cursor = context.getContentResolver().query(uri1, null, selection, null, null);
 
-                    if (cursor.moveToFirst()) {
-                        for (int j = 0; j < cursor.getCount(); j++) {
-                            SMS sms = new SMS();
-                            sms.setContent(cursor.getString(cursor.getColumnIndexOrThrow("body")).toString());
-                            sms.setTel_no(cursor.getString(cursor.getColumnIndexOrThrow("address")).toString());
-                            sms.setDate_received(cursor.getLong(cursor.getColumnIndexOrThrow("date")));
-                            sms.setDate_sent(cursor.getLong(cursor.getColumnIndexOrThrow("date_sent")));
-                            sms.setRead((cursor.getString(cursor.getColumnIndexOrThrow("read"))));
-                            sms.setSeen(cursor.getString(cursor.getColumnIndexOrThrow("seen")));
-                            sms.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
-                            sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
-                            sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
+                   if (cursor.moveToFirst()) {
+                       for (int j = 0; j < cursor.getCount(); j++) {
+                           SMS sms = new SMS();
+                           sms.setContent(cursor.getString(cursor.getColumnIndexOrThrow("body")).toString());
+                           sms.setTel_no(cursor.getString(cursor.getColumnIndexOrThrow("address")).toString());
+                           sms.setDate_received(cursor.getLong(cursor.getColumnIndexOrThrow("date")));
+                           sms.setDate_sent(cursor.getLong(cursor.getColumnIndexOrThrow("date_sent")));
+                           sms.setRead((cursor.getString(cursor.getColumnIndexOrThrow("read"))));
+                           sms.setSeen(cursor.getString(cursor.getColumnIndexOrThrow("seen")));
+                           sms.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
+                           sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
+                           sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
 
-                            //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
+                           //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
 /*
                             SMS sms1 = dbHelper.getSMS(sms);
                             if (sms1 != null) {
@@ -110,19 +110,20 @@ public class SMS_MMS_Reader {
                                 Log.e("MaSMSestro", "deleted=" + z);
                             }
 */
-                            if (dbHelper.getSMS(sms) == null) {
-                                //                              Log.e("MaSMSestro", "sms doesnt exist");
-                                long sms_id = dbHelper.insertSMS(sms);
-                                //                            Log.e("MaSMSestro", "insertedSMS=" + sms_id);
+                           if (dbHelper.getSMS(sms) == null) {
+                               //                              Log.e("MaSMSestro", "sms doesnt exist");
+                               long sms_id = dbHelper.insertSMS(sms);
+                               //                            Log.e("MaSMSestro", "insertedSMS=" + sms_id);
 
-                            }
-                            cursor.moveToNext();
-                        }
-                        cursor.close();
+                           }
+                           cursor.moveToNext();
+                       }
+                       cursor.close();
 
-                    }
-                }
-                c.moveToNext();
+                   }
+               }
+               c.moveToNext();
+           }
             }
             c.close();
         }
