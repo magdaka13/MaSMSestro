@@ -134,7 +134,13 @@ public class DeleteFolder extends AppCompatActivity {
                                 public void onClick(View v) {
                                     //Toast.makeText(getApplicationContext(), "move all", Toast.LENGTH_LONG).show();
                                     dialogs.get(j).cancel();
-                                  //  dbHelper.moveSMSToIncoming(f);
+
+                                     List <Conversation> convs=new ArrayList<>();
+                                    convs=dbHelper.getAllConversationbyFolderName(f.getName());
+
+                                    for (int z=0;z<convs.size();z++) {
+                                        dbHelper.moveConversationToFolder("Incoming",convs.get(z).getConv_id() );
+                                    }
                                      dbHelper.deleteFolder(f);
                                     j = j - 1;
 

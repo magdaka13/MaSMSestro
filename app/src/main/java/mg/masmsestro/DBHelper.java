@@ -103,6 +103,22 @@ int id=0;
 
     }
 
+    public String getFolderByThreadId(int thread_id) {
+        String name="";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select name from folder where id in (select id_folder from  convReffolder where id_conv in (select conv_id from conversation where thread_id="+thread_id+"))", null);
+        if (res != null && res.moveToFirst()) {
+            name=res.getString(res.getColumnIndex("name"));
+            res.close();
+            return name;
+        } else {
+
+            return "";
+        }
+
+    }
+
 
     public int numberOfRowsFolder() {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -220,6 +236,29 @@ String content;
         return conversation_list;
     }
 
+    public Conversation getConversationbyThreadId(int thread_id) {
+        Conversation s=null;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_str="select conv_id from conversation where thread_id="+thread_id;
+        Log.e("MaSMSestro","sql="+sql_str);
+        Cursor res = db.rawQuery(sql_str, null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+
+            s = new Conversation();
+            s.setConv_id(res.getInt(res.getColumnIndex("conv_id")));
+
+            res.moveToNext();
+        }
+        res.close();
+
+
+        return s;
+    }
+
+
 public long insertConversation(Conversation s) {
 
     SQLiteDatabase db = this.getWritableDatabase();
@@ -235,8 +274,11 @@ public long insertConversation(Conversation s) {
 }
 
     public Integer deleteConversation(Conversation s) {
+        Log.e("MaSMSestro","deleteconversation inside");
         SQLiteDatabase db = this.getWritableDatabase();
+        Log.e("MaSMSestro","conv_id="+s.getConv_id());
         return db.delete("conversation", "conv_id = ? ", new String[]{Integer.toString(s.getConv_id())});
+
     }
 
     public Integer deleteAllConversation() {

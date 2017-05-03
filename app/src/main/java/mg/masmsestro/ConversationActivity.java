@@ -70,7 +70,7 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             String snippet;
             snippet = ConversationList.get(i).getSnippet();
 
-           String conversation_short=ConversationList.get(i).getConv_id()+" "+ConversationList.get(i).getRecipient_list()+System.getProperty("line.separator")+snippet;
+           String conversation_short=ConversationList.get(i).getRecipient_list()+System.getProperty("line.separator")+snippet;
             if ((ConversationList.get(i).getRecipient_list()!=null) && (snippet!=null))
             {
                 ConversationList_string.add(conversation_short);

@@ -3,6 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="mg.masmsestro.MainActivity">
     <item
+        android:id="@+id/action_refresh"
+        android:orderInCategory="90"
+        android:title="Refresh"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_search"
         android:orderInCategory="100"
         android:title="@string/action_search"

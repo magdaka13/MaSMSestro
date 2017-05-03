@@ -1,5 +1,7 @@
 package mg.masmsestro;
 
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -8,8 +10,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,9 @@ public class SMSActivity extends AppCompatActivity {
     private ListView SMSList_view;
 private ArrayAdapter a;
     private String thread_id,sms_keyword;
+private Dialog d;
+    private Context context=this;
+    private List<String> FolderList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +111,9 @@ Bundle ex=intent.getExtras();
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_sms, menu);
+if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
+    getMenuInflater().inflate(R.menu.menu_sms, menu);
+}
         return true;
     }
 
@@ -114,42 +124,76 @@ Bundle ex=intent.getExtras();
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-/*
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_search) {
-d=new Dialog(context); // Context, this, etc.
+        if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
-            d.setTitle(R.string.action_search);
-            d.setContentView(R.layout.search_dialog);
-            d.setCancelable(true);
-            d.show();
+            if (id == R.id.action_move_conversation) {
+
+                d = new Dialog(context); // Context, this, etc.
+
+                d.setTitle("Move");
+                d.setContentView(R.layout.move_dialog);
+                d.setCancelable(true);
+                d.show();
 
 
-            Button btnCancel = (Button) d.findViewById(R.id.dialog_cancel);
-            // if button is clicked, close the custom dialog
-            btnCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    ConversationActivity.this.a.getFilter().filter("");
-                    d.cancel();
+                final Spinner s = (Spinner) d.findViewById(R.id.FolderName);
+                FolderList = dbHelper.getAllFoldersNames();
 
-                }
-            });
 
-            Button btnSearch = (Button) d.findViewById(R.id.btn_search);
-            // if button is clicked, close the custom dialog
-            btnSearch.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    EditText e=(EditText)d.findViewById(R.id.str_to_search);
-                    ConversationActivity.this.a.getFilter().filter(e.getText());
-                    d.cancel();
-                }
-            });
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
+                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                s.setAdapter(dataAdapter);
 
-            return true;
+
+                Button btnCancel = (Button) d.findViewById(R.id.dialog_cancel);
+                btnCancel.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        d.cancel();
+
+                    }
+                });
+
+                Button btnOK = (Button) d.findViewById(R.id.btn_search);
+                btnOK.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.e("MaSMSestro", "folder=" + String.valueOf(s.getSelectedItem()));
+                        Log.e("MaSMSestro", "conv_id=" + dbHelper.getConversationbyThreadId(Integer.valueOf(thread_id)).getConv_id());
+                        String folder_name=dbHelper.getFolderByThreadId(Integer.valueOf(thread_id));
+                        int a = dbHelper.moveConversationToFolder(String.valueOf(s.getSelectedItem()), dbHelper.getConversationbyThreadId(Integer.valueOf(thread_id)).getConv_id());
+                        Log.e("MaSMSestro", Integer.toString(a));
+                        d.dismiss();
+
+                        Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
+                        Bundle extras = new Bundle();
+                        extras.putString("FOLDER_NAME", folder_name);
+                        intent.putExtras(extras);
+                        startActivity(intent);
+
+                    }
+                });
+
+                return true;
+            }
+
+            if (id == R.id.action_delete_conversation) {
+
+                String folder_name=dbHelper.getFolderByThreadId(Integer.valueOf(thread_id));
+                Conversation s=dbHelper.getConversationbyThreadId(Integer.valueOf(thread_id));
+                dbHelper.deleteConversation(s);
+dbHelper.deleteAllSMSFromConv(s);
+
+                Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("FOLDER_NAME", folder_name);
+                intent.putExtras(extras);
+                startActivity(intent);
+
+                return true;
+            }
         }
-*/
+
         return super.onOptionsItemSelected(item);
     }
 

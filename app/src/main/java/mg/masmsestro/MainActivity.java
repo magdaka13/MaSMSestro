@@ -71,7 +71,7 @@ private Context context=this;
         SMSFolders.setAdapter(a);
 
        // dbHelper.deleteAllConversation();
-
+//second - read all conversations and sms
         if (dbHelper.numberOfRowsSMS()==0)
         {
             SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
@@ -185,6 +185,13 @@ private Context context=this;
 
         }
 
+        if (id == R.id.action_refresh)
+        {
+            dbHelper.deleteAllConversation();
+            SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
+            sms_reader.read_SMS_MMS(dbHelper,getApplicationContext());
+        }
+
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             d=new Dialog(context); // Context, this, etc.
@@ -231,4 +238,10 @@ private Context context=this;
     }
 
 
+    @Override
+    public void onDestroy()
+    {
+        dbHelper.close();
+        super.onDestroy();
+    }
 }

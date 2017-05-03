@@ -1,5 +1,6 @@
 package mg.masmsestro;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -43,9 +44,14 @@ private String folder_name;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final Intent intent = getIntent();
-        Bundle ex=intent.getExtras();
-        folder_name = ex.getString("FOLDER_NAME");
+        try {
+            final Intent intent = getIntent();
+            Bundle ex = intent.getExtras();
+            folder_name = ex.getString("FOLDER_NAME");
+        }catch(Exception e)
+        {
+            //do nothing
+        }
 
         setTitle(" MaSMSestro->" + folder_name);
 
@@ -84,6 +90,7 @@ private String folder_name;
                     getApplicationContext(),
                     R.layout.my_list_item_conversation_delete, ConversationList_string
             );
+
             ConversationItems.setAdapter(a);
         }
 
@@ -106,17 +113,27 @@ private String folder_name;
         toTrash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (i = 0; i < ConversationItems.getCount(); i++) {
-                    if (ConversationItems.isItemChecked(i)) {
 
-                        dbHelper.deleteConversation(ConversationList.get(i));
-                        dbHelper.deleteAllSMSFromConv(ConversationList.get(i));
-Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString());
+                    for (i = 0; i < ConversationItems.getCount(); i++) {
+                        if (ConversationItems.isItemChecked(i)) {
+
+                            if (i < ConversationList.size()) {
+                                dbHelper.deleteConversation(ConversationList.get(i));
+                                dbHelper.deleteAllSMSFromConv(ConversationList.get(i));
+                                Log.e("MaSMSestro", "checked " + ConversationItems.getItemAtPosition(i).toString());
+                            }
+
+                        }
+
+                        Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
+                        Bundle extras=new Bundle();
+                        extras.putString("FOLDER_NAME", folder_name);
+                        intent.putExtras(extras);
+                        startActivityForResult(intent,1);
+
 
                     }
 
-
-                }
             }
         });
 
@@ -170,8 +187,6 @@ Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString())
 
         }
 
-
-
         if (ConversationList_string.size()>0) {
             ConversationItems = (ListView) findViewById(R.id.ConversationList);
             a = new ArrayAdapter<String>(
@@ -183,16 +198,15 @@ Log.e("MaSMSestro","checked "+ConversationItems.getItemAtPosition(i).toString())
 
     }
 
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
-        Bundle extras=new Bundle();
-        extras.putString("FOLDER_NAME", folder_name);
-        intent.putExtras(extras);
-        startActivity(intent);
-        Log.e("MaSMSestro","onbackpressed:"+folder_name);
-
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                folder_name = data.getStringExtra("FOLDER_NAME");
+            }
+        }
     }
+
 
     @Override
     public void onDestroy() {
