@@ -109,8 +109,8 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
         NewSMS.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, " New  SMS will be created here", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(getApplicationContext(), SMSNewActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -165,6 +165,14 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
             });
 
             return true;
+        }
+
+        if (id==R.id.action_new_sms)
+        {
+            Intent intent = new Intent(getApplicationContext(), SMSNewActivity.class);
+            startActivity(intent);
+
+            return  true;
         }
 
         if (id == R.id.action_move_conversation) {

@@ -84,6 +84,17 @@
         </activity>
 
         <activity
+            android:name=".SMSNewActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.MainActivity" />
+        </activity>
+
+
+        <activity
             android:name=".SMSDeleteActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"

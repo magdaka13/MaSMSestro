@@ -195,6 +195,9 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
             if (id==R.id.action_new_sms)
             {
+                Intent intent = new Intent(getApplicationContext(), SMSNewActivity.class);
+                startActivity(intent);
+
                 return true;
             }
 
