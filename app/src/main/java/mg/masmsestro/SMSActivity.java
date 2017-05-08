@@ -182,11 +182,27 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
                 String folder_name=dbHelper.getFolderByThreadId(Integer.valueOf(thread_id));
                 Conversation s=dbHelper.getConversationbyThreadId(Integer.valueOf(thread_id));
                 dbHelper.deleteConversation(s);
-dbHelper.deleteAllSMSFromConv(s);
+                dbHelper.deleteAllSMSFromConv(s);
 
                 Intent intent = new Intent(getApplicationContext(), ConversationActivity.class);
                 Bundle extras = new Bundle();
                 extras.putString("FOLDER_NAME", folder_name);
+                intent.putExtras(extras);
+                startActivity(intent);
+
+                return true;
+            }
+
+            if (id==R.id.action_new_sms)
+            {
+                return true;
+            }
+
+            if (id==R.id.action_delete_sms)
+            {
+                Intent intent = new Intent(getApplicationContext(), SMSDeleteActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("THREAD_ID_STRING", thread_id);
                 intent.putExtras(extras);
                 startActivity(intent);
 

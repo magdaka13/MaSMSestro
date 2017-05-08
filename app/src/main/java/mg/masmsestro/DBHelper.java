@@ -368,6 +368,32 @@ public long insertConversation(Conversation s) {
 return SMS_List;
     }
 
+    public List<SMS> getAllSMSByThread_SMS(Integer thread_id) {
+        List<SMS> SMS_List=new ArrayList<SMS>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql_string="select * from sms where thread_id="+thread_id+" order by date_received asc";
+
+        //     Log.e("MaSMSestro","getSMS - sql="+sql_string);
+
+        Cursor res = db.rawQuery(sql_string,null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            SMS s=new SMS();
+            s.setPerson(res.getString(res.getColumnIndex("tel_no")));
+            s.setContent(res.getString(res.getColumnIndex("content")));
+            s.setThread_id(res.getInt(res.getColumnIndex("thread_id")));
+            s.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
+            SMS_List.add(s);
+            res.moveToNext();
+        }
+
+        res.close();
+        return SMS_List;
+    }
+
     public List<String> getAllSMSByKeyword(String keyword) {
         List<String> SMS_List=new ArrayList<String>();
         String sms_string;
@@ -395,6 +421,25 @@ return SMS_List;
     public int numberOfRowsSMS() {
         SQLiteDatabase db = this.getReadableDatabase();
         return (int) DatabaseUtils.queryNumEntries(db, "sms");
+    }
+
+    public int numberOfRowsSMS_byThreadId(int thread_id) {
+        int count=0;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String sql_string="select count(*) as countSMS from sms where thread_id="+thread_id;
+
+        //     Log.e("MaSMSestro","getSMS - sql="+sql_string);
+
+        Cursor res = db.rawQuery(sql_string,null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            count=res.getInt(res.getColumnIndex("countSMS"));
+            res.moveToNext();
+        }
+
+        res.close();
+        return count;
     }
 
     public int updateSMS(SMS s) {
@@ -648,6 +693,11 @@ return SMS_List;
     public Integer deleteConvRefFolder(ConvRefFolder s) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete("ConvReffolder", "id_ref = ? ", new String[]{Integer.toString(s.getId_ref())});
+    }
+
+    public int deleteConvRefFolder_byConvId(int conv_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete("ConvReffolder", "id_conv = ? ", new String[]{Integer.toString(conv_id)});
     }
 
     /*

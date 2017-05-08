@@ -83,6 +83,15 @@
                 android:value="mg.masmsestro.ConversationActivity" />
         </activity>
 
+        <activity
+            android:name=".SMSDeleteActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".ConversationActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mg.masmsestro.ConversationActivity" />
+        </activity>
 
 
     <activity
