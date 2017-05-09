@@ -1,6 +1,7 @@
 package mg.masmsestro;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,14 +11,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.app.Activity;
+import android.database.Cursor;
+import android.provider.ContactsContract;
+import android.widget.Toast;
+import android.view.View.OnClickListener;
+import android.telephony.SmsManager;
 
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class SMSNewActivity extends AppCompatActivity {
 
@@ -29,6 +38,8 @@ public class SMSNewActivity extends AppCompatActivity {
     private String thread_id,sms_keyword;
  private Boolean checked;
     int i;
+    private final int PICK_CONTACT=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +59,81 @@ public class SMSNewActivity extends AppCompatActivity {
             Log.e("MaSMSestro", "inside SMSnew activity");
 
 
+EditText contact=(EditText) findViewById(R.id.SMScontact);
+
+
+        contact.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent, PICK_CONTACT);
+            }
+        });
+
+        Button sendBtn=(Button) findViewById(R.id.SMSsend);
+        sendBtn.setOnClickListener(new OnClickListener() {
+
+        @Override
+        public void onClick (View v)
+        {
+            EditText contact=(EditText) findViewById(R.id.SMScontact);
+            EditText body=(EditText) findViewById(R.id.SMSbody);
+
+            SmsManager smsManager = SmsManager.getDefault();
+for(String part:smsManager.divideMessage(String.valueOf(body.getText())))
+            {
+
+                smsManager.sendTextMessage(String.valueOf(contact.getText()), null, part, null, null);
+                Toast.makeText(getApplicationContext(), "SMS was sent",
+                        Toast.LENGTH_LONG).show();
+
+            }
+        }
+        }
+        );
+
+    }
+
+    @Override public void onActivityResult(int reqCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(reqCode, resultCode, data);
+
+        switch(reqCode)
+        {
+            case (PICK_CONTACT):
+                if (resultCode == Activity.RESULT_OK)
+                {
+                    Uri contactData = data.getData();
+                    Cursor c = managedQuery(contactData, null, null, null, null);
+                    if (c.moveToFirst())
+                    {
+                        String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+                        String hasPhone =
+                                c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                        if (hasPhone.equalsIgnoreCase("1"))
+                        {
+                            Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,null, null);
+                            phones.moveToFirst();
+                            String cNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                            EditText contact=(EditText) findViewById(R.id.SMScontact);
+                            String prevcontact= String.valueOf(contact.getText());
+                            if (!prevcontact.isEmpty()) {
+                                contact.setText(prevcontact + "," + cNumber);
+                            }
+                            else
+                            {
+                                contact.setText(cNumber);
+                            }
+                        }
+                    }
+                }
+        }
     }
 
     @Override
