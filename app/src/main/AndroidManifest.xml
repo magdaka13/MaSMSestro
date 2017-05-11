@@ -106,12 +106,19 @@
                 android:value="mg.masmsestro.ConversationActivity" />
         </activity>
 
+        <receiver android:name=".IncomingSms">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
 
     <activity
         android:name="mg.masmsestro.AndroidDatabaseManager"
         android:theme="@style/AppTheme.NoActionBar"
         android:label="@string/app_name">
     </activity>
+
 
     </application>
 

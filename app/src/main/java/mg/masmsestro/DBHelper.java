@@ -284,6 +284,7 @@ public long insertConversation(Conversation s) {
     public Integer deleteAllConversation() {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete("sms",null,null);
+        db.delete("convReffolder",null,null);
         return db.delete("conversation", null, null);
 
     }
