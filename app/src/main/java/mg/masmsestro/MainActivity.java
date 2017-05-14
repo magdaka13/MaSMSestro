@@ -40,6 +40,9 @@ private Context context=this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //context.deleteDatabase("SMSDB.db");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -123,7 +126,6 @@ private Context context=this;
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_new_folder) {
 
             findViewById(R.id.folder_options_layout).setVisibility(View.VISIBLE);
@@ -192,7 +194,6 @@ private Context context=this;
             sms_reader.read_SMS_MMS(dbHelper,getApplicationContext());
         }
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_search) {
             d=new Dialog(context); // Context, this, etc.
 
@@ -225,6 +226,13 @@ private Context context=this;
             });
 
             return true;
+        }
+
+        if (id == R.id.action_rules) {
+            Intent intent = new Intent(getApplicationContext(),RuleActivity.class);
+            startActivity(intent);
+
+        return true;
         }
 
         if (id == R.id.action_DB) {

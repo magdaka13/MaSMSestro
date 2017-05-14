@@ -7,7 +7,8 @@ package mg.masmsestro;
 public class Rule {
 
     private Integer id_rule;
-    private String rule;
+    private String rule_number;
+    private String rule_keyword;
     private Integer folder_id;
 
     public Integer getId_rule() {
@@ -18,12 +19,20 @@ public class Rule {
         this.id_rule = id_rule;
     }
 
-    public String getRule() {
-        return rule;
+    public String getRule_number() {
+        return rule_number;
     }
 
-    public void setRule(String rule) {
-        this.rule = rule;
+    public void setRule_number(String rule_number) {
+        this.rule_number = rule_number;
+    }
+
+    public String getRule_keyword() {
+        return rule_keyword;
+    }
+
+    public void setRule_keyword(String rule_keyword) {
+        this.rule_keyword = rule_keyword;
     }
 
     public Integer getFolder_id() {
