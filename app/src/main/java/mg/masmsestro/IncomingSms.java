@@ -1,5 +1,6 @@
 package mg.masmsestro;
 
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.telephony.SmsManager;
 import android.content.Context;
@@ -10,6 +11,10 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.database.DatabaseUtils;
 import android.database.Cursor;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
+import android.app.PendingIntent;
+import android.app.NotificationManager;
 
 import mg.masmsestro.DBHelper;
 import android.util.Log;
@@ -23,6 +28,7 @@ public class IncomingSms extends BroadcastReceiver {
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
     private DBHelper dbHelper;
+    private int mId;
 
 
     public void onReceive(Context context, Intent intent) {
@@ -49,6 +55,40 @@ public class IncomingSms extends BroadcastReceiver {
                     SMS_MMS_Reader sms_mms_reader=new SMS_MMS_Reader();
                     sms_mms_reader.read_SMS_MMS(dbHelper,context);
                     dbHelper.close();
+
+                    String msg=phoneNumber+": "+message;
+                    NotificationCompat.Builder mBuilder =
+                            new NotificationCompat.Builder(context)
+                                    .setSmallIcon(R.mipmap.ic_launcher)
+                                    .setContentTitle("MaSMSestro")
+                                    .setContentText(msg)
+                            .setAutoCancel(true)
+                            .setDefaults(Notification.DEFAULT_SOUND);
+// Creates an explicit intent for an Activity in your app
+                    Intent resultIntent = new Intent(context, MainActivity.class);
+
+// The stack builder object will contain an artificial back stack for the
+// started Activity.
+// This ensures that navigating backward from the Activity leads out of
+// your application to the Home screen.
+                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+// Adds the back stack for the Intent (but not the Intent itself)
+                    stackBuilder.addParentStack(MainActivity.class);
+// Adds the Intent that starts the Activity to the top of the stack
+                    stackBuilder.addNextIntent(resultIntent);
+                    PendingIntent resultPendingIntent =
+                            stackBuilder.getPendingIntent(
+                                    0,
+                                    PendingIntent.FLAG_UPDATE_CURRENT
+                            );
+                    mBuilder.setContentIntent(resultPendingIntent);
+                    mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
+                    NotificationManager mNotificationManager =
+                            (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+// mId allows you to update the notification later on.
+                    Notification notification=mBuilder.build();
+                    notification.tickerText=msg;
+                    mNotificationManager.notify(mId, notification);
 
                 } // end for loop
             } // bundle is null

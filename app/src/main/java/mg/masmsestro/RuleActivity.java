@@ -47,7 +47,8 @@ private DBHelper dbHelper;
 
         for (Rule rule : RuleList)
         {
-            String str="Telno: "+rule.getRule_number()+";keyword: ("+rule.getRule_keyword()+"),will be redirected to Folder:"+dbHelper.getFolderById(rule.getFolder_id()).getName();
+          //  String str="Tel no: "+rule.getRule_number()+";keyword: ("+rule.getRule_keyword()+"),will be redirected to Folder:"+dbHelper.getFolderById(rule.getFolder_id()).getName();
+            String str=rule.getRule_name();
             RuleList_string.add(str);
         }
 

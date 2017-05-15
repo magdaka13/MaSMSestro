@@ -22,26 +22,26 @@ class DBHelper extends SQLiteOpenHelper {
 
 
 
-        super(context, DATABASE_NAME, null, 4);
+        super(context, DATABASE_NAME, null, 5);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+/*
         db.execSQL("DROP TABLE IF EXISTS folders");
         db.execSQL("DROP TABLE IF EXISTS conversation");
         db.execSQL("DROP TABLE IF EXISTS sms");
         db.execSQL("DROP TABLE IF EXISTS rule");
         db.execSQL("DROP TABLE IF EXISTS settings");
         db.execSQL("DROP TABLE IF EXISTS convReffolder");
-
+*/
 
 
 
         db.execSQL("create table if not exists folder (id integer primary key, name text)");
         db.execSQL("create table if not exists conversation (conv_id integer primary key, recipient_list text, snippet text,thread_id int,date long,read integer,seen integer)");
         db.execSQL("create table if not exists sms (sms_id integer primary key, tel_no text, content text,date_received long,date_sent long,read integer,seen integer,person text,thread_id integer,type integer)");
-        db.execSQL("create table if not exists rule (id_rule integer primary key, rule_number text,rule_keyword text,id_folder integer)");
+        db.execSQL("create table if not exists rule (id_rule integer primary key, rule_name text,rule_number text,rule_keyword text,id_folder integer)");
         db.execSQL("create table if not exists settings (id_settings integer primary key, name text,value text)");
         db.execSQL("create table if not exists convReffolder (id_ref integer primary key, id_conv integer,id_folder integer)");
 
@@ -531,6 +531,7 @@ return SMS_List;
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("rule_name",r.getRule_name());
         contentValues.put("rule_number", r.getRule_number());
         contentValues.put("rule_keyword", r.getRule_keyword());
         contentValues.put("folder_id", r.getFolder_id());
@@ -545,6 +546,7 @@ return SMS_List;
 
         Rule ruleObj = new Rule();
         ruleObj.setId_rule(res.getInt(res.getColumnIndex("id_rule")));
+        ruleObj.setRule_name(res.getString(res.getColumnIndex("rule_name")));
         ruleObj.setRule_number(res.getString(res.getColumnIndex("rule_number")));
         ruleObj.setRule_keyword(res.getString(res.getColumnIndex("rule_keyword")));
         ruleObj.setFolder_id(res.getInt(res.getColumnIndex("folder_id")));
@@ -561,6 +563,7 @@ return SMS_List;
     public int updateRule(Rule r) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        contentValues.put("rule_name",r.getRule_name());
         contentValues.put("rule_number", r.getRule_number());
         contentValues.put("rule_keyword", r.getRule_keyword());
         contentValues.put("folder_id", r.getFolder_id());
@@ -583,6 +586,7 @@ return SMS_List;
         while (!res.isAfterLast()) {
             Rule r = new Rule();
             r.setId_rule(res.getInt(res.getColumnIndex("id_rule")));
+            r.setRule_name(res.getString(res.getColumnIndex("rule_name")));
             r.setRule_number(res.getString(res.getColumnIndex("rule_number")));
             r.setRule_keyword(res.getString(res.getColumnIndex("rule_keyword")));
             r.setFolder_id(res.getInt(res.getColumnIndex("id_folder")));
