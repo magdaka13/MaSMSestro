@@ -56,6 +56,9 @@ public class IncomingSms extends BroadcastReceiver {
                     sms_mms_reader.read_SMS_MMS(dbHelper,context);
                     dbHelper.close();
 
+                    Intent SMSActivityIntent = new Intent(context, SMSActivity.class);
+                    PendingIntent pendingIntent=PendingIntent.getActivity(context,(int)System.currentTimeMillis(),SMSActivityIntent,0);
+
                     String msg=phoneNumber+": "+message;
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(context)
@@ -86,8 +89,21 @@ public class IncomingSms extends BroadcastReceiver {
                     NotificationManager mNotificationManager =
                             (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
 // mId allows you to update the notification later on.
+
+                    Intent MarkAsRead = new Intent();
+                    MarkAsRead.setAction(AppConstant.MarkAsRead);
+                    PendingIntent pendingIntentYes = PendingIntent.getBroadcast(context, 12345, MarkAsRead, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.addAction(R.mipmap.ic_launcher, "Mark as read", pendingIntentYes);
+
+
+                    Intent Delete = new Intent();
+                    Delete.setAction(AppConstant.Delete);
+                    PendingIntent pendingIntentYes2 = PendingIntent.getBroadcast(context, 12345, Delete, PendingIntent.FLAG_UPDATE_CURRENT);
+                    mBuilder.addAction(R.mipmap.ic_launcher, "Delete", pendingIntentYes2);
+
                     Notification notification=mBuilder.build();
                     notification.tickerText=msg;
+
                     mNotificationManager.notify(mId, notification);
 
                 } // end for loop

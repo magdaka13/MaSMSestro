@@ -123,6 +123,14 @@
         </receiver>
 
 
+        <receiver android:name=".NotificationReceiver">
+            <intent-filter>
+                <action android:name="mg.masmsestro.MarkAsRead"/>
+                <action android:name="mg.masmsestro.Delete"/>
+
+            </intent-filter>
+        </receiver>
+
     <activity
         android:name="mg.masmsestro.AndroidDatabaseManager"
         android:theme="@style/AppTheme.NoActionBar"
