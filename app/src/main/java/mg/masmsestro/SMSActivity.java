@@ -55,7 +55,7 @@ Bundle ex=intent.getExtras();
             setTitle(" MaSMSestro-> Conversation");
 
 
-            Log.e("MaSMSestro", "inside SMS activity");
+            Log.e("MaSMSestro", "inside SMS activity thread_id="+thread_id);
 
             dbHelper = new DBHelper(getApplicationContext());
 

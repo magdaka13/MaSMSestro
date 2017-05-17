@@ -117,9 +117,11 @@ public class SMS_MMS_Reader {
                            if (dbHelper.getSMS(sms) == null) {
                                //                              Log.e("MaSMSestro", "sms doesnt exist");
                                long sms_id = dbHelper.insertSMS(sms);
-                               //                            Log.e("MaSMSestro", "insertedSMS=" + sms_id);
+                               Log.e("MaSMSestro", "insertedSMS=" + sms.getThread_id());
 
-                               thread_id_ret=sms.getThread_id();
+                               if (thread_id_ret==-1) {
+                                   thread_id_ret = sms.getThread_id();
+                               }
                            }
                            cursor.moveToNext();
                        }

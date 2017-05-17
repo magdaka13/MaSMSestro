@@ -55,6 +55,7 @@ private int thread_id;
 
                     SMS_MMS_Reader sms_mms_reader=new SMS_MMS_Reader();
                     thread_id=sms_mms_reader.read_SMS_MMS(dbHelper,context);
+                    Log.e("Masmsestro","thread_id="+thread_id);
                     dbHelper.close();
 
                     String msg=phoneNumber+": "+message;
@@ -66,7 +67,11 @@ private int thread_id;
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_SOUND);
 // Creates an explicit intent for an Activity in your app
-                    Intent resultIntent = new Intent(context, MainActivity.class);
+                    Intent resultIntent = new Intent(context, SMSActivity.class);
+                    Bundle extras2=new Bundle();
+                    extras2.putString("THREAD_ID_STRING", String.valueOf(thread_id));
+                    extras2.putString("SMS_KEYWORD_STRING", "");
+                    resultIntent.putExtras(extras2);
 
 // The stack builder object will contain an artificial back stack for the
 // started Activity.
@@ -74,7 +79,7 @@ private int thread_id;
 // your application to the Home screen.
                     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
 // Adds the back stack for the Intent (but not the Intent itself)
-                    stackBuilder.addParentStack(MainActivity.class);
+                    stackBuilder.addParentStack(SMSActivity.class);
 // Adds the Intent that starts the Activity to the top of the stack
                     stackBuilder.addNextIntent(resultIntent);
                     PendingIntent resultPendingIntent =
@@ -82,6 +87,7 @@ private int thread_id;
                                     0,
                                     PendingIntent.FLAG_UPDATE_CURRENT
                             );
+
                     mBuilder.setContentIntent(resultPendingIntent);
                     mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
                     NotificationManager mNotificationManager =
