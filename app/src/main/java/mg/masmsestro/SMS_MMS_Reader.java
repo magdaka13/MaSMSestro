@@ -11,8 +11,11 @@ import android.content.Context;
 
 public class SMS_MMS_Reader {
 
-    public void read_SMS_MMS(DBHelper dbHelper,Context context)
+    public int read_SMS_MMS(DBHelper dbHelper,Context context)
     {
+        int thread_id_ret;
+        thread_id_ret=-1;
+
         //List<String> smsList = new ArrayList<>();
         final String[] projection = new String[]{"_id","ct_t","address","body","thread_id","date","read"};
 
@@ -102,6 +105,7 @@ public class SMS_MMS_Reader {
                            sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
                            sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
 
+
                            //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
 /*
                             SMS sms1 = dbHelper.getSMS(sms);
@@ -115,6 +119,7 @@ public class SMS_MMS_Reader {
                                long sms_id = dbHelper.insertSMS(sms);
                                //                            Log.e("MaSMSestro", "insertedSMS=" + sms_id);
 
+                               thread_id_ret=sms.getThread_id();
                            }
                            cursor.moveToNext();
                        }
@@ -128,5 +133,6 @@ public class SMS_MMS_Reader {
             c.close();
         }
 
+       return thread_id_ret;
     }
 }

@@ -29,9 +29,10 @@ public class IncomingSms extends BroadcastReceiver {
     final SmsManager sms = SmsManager.getDefault();
     private DBHelper dbHelper;
     private int mId;
-
+private int thread_id;
 
     public void onReceive(Context context, Intent intent) {
+
 
         // Retrieves a map of extended data from the intent.
         final Bundle bundle = intent.getExtras();
@@ -53,11 +54,8 @@ public class IncomingSms extends BroadcastReceiver {
                     dbHelper=new DBHelper(context);
 
                     SMS_MMS_Reader sms_mms_reader=new SMS_MMS_Reader();
-                    sms_mms_reader.read_SMS_MMS(dbHelper,context);
+                    thread_id=sms_mms_reader.read_SMS_MMS(dbHelper,context);
                     dbHelper.close();
-
-                    Intent SMSActivityIntent = new Intent(context, SMSActivity.class);
-                    PendingIntent pendingIntent=PendingIntent.getActivity(context,(int)System.currentTimeMillis(),SMSActivityIntent,0);
 
                     String msg=phoneNumber+": "+message;
                     NotificationCompat.Builder mBuilder =
@@ -92,12 +90,20 @@ public class IncomingSms extends BroadcastReceiver {
 
                     Intent MarkAsRead = new Intent();
                     MarkAsRead.setAction(AppConstant.MarkAsRead);
+                    Bundle extras=new Bundle();
+                    extras.putString("THREAD_ID_STRING", String.valueOf(thread_id));
+                    extras.putString("SMS_KEYWORD_STRING", "");
+                    MarkAsRead.putExtras(extras);
                     PendingIntent pendingIntentYes = PendingIntent.getBroadcast(context, 12345, MarkAsRead, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.addAction(R.mipmap.ic_launcher, "Mark as read", pendingIntentYes);
 
 
                     Intent Delete = new Intent();
                     Delete.setAction(AppConstant.Delete);
+                    Bundle extras1=new Bundle();
+                    extras1.putString("THREAD_ID_STRING", String.valueOf(thread_id));
+                    extras1.putString("SMS_KEYWORD_STRING", "");
+                    Delete.putExtras(extras1);
                     PendingIntent pendingIntentYes2 = PendingIntent.getBroadcast(context, 12345, Delete, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.addAction(R.mipmap.ic_launcher, "Delete", pendingIntentYes2);
 

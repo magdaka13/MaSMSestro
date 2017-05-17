@@ -539,18 +539,24 @@ return SMS_List;
         return db.insert("rule", null, contentValues);
     }
 
-    public Rule getRule(Rule r) {
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res = db.rawQuery("select * from rule where id_rule=" + r.getId_rule() + "", null);
+    public Rule getRuleById(int id) {
 
         Rule ruleObj = new Rule();
-        ruleObj.setId_rule(res.getInt(res.getColumnIndex("id_rule")));
-        ruleObj.setRule_name(res.getString(res.getColumnIndex("rule_name")));
-        ruleObj.setRule_number(res.getString(res.getColumnIndex("rule_number")));
-        ruleObj.setRule_keyword(res.getString(res.getColumnIndex("rule_keyword")));
-        ruleObj.setFolder_id(res.getInt(res.getColumnIndex("folder_id")));
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from rule where id_rule=" + id + "", null);
 
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+
+            ruleObj.setId_rule(res.getInt(res.getColumnIndex("id_rule")));
+            ruleObj.setRule_name(res.getString(res.getColumnIndex("rule_name")));
+            ruleObj.setRule_number(res.getString(res.getColumnIndex("rule_number")));
+            ruleObj.setRule_keyword(res.getString(res.getColumnIndex("rule_keyword")));
+            ruleObj.setFolder_id(res.getInt(res.getColumnIndex("id_folder")));
+
+            res.moveToNext();
+        }
         res.close();
         return ruleObj;
     }
@@ -566,7 +572,7 @@ return SMS_List;
         contentValues.put("rule_name",r.getRule_name());
         contentValues.put("rule_number", r.getRule_number());
         contentValues.put("rule_keyword", r.getRule_keyword());
-        contentValues.put("folder_id", r.getFolder_id());
+        contentValues.put("id_folder", r.getFolder_id());
         return db.update("rule", contentValues, "id_rule = ? ", new String[]{Integer.toString(r.getId_rule())});
 
     }

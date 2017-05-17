@@ -6,6 +6,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -61,13 +65,49 @@ private DBHelper dbHelper;
         );
         RuleList_view.setAdapter(a);
 
-        RuleList_view.post(new Runnable() {
+        RuleList_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void run() {
-                // Select the last row so it will scroll into view...
-                RuleList_view.setSelection(a.getCount() - 1);
+            public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
+
+                Intent intent = new Intent(getApplicationContext(), RuleDetailsActivity.class);
+                Bundle extras=new Bundle();
+                extras.putString("RULE_ID_STRING", RuleList.get(pos).getId_rule().toString());
+                intent.putExtras(extras);
+                startActivity(intent);
+
             }
         });
 
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_rule, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+
+        if (id==R.id.action_new_rule)
+        {
+            return true;
+        }
+
+        if (id==R.id.action_delete_rule)
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
 }
