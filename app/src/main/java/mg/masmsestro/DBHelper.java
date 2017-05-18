@@ -534,7 +534,7 @@ return SMS_List;
         contentValues.put("rule_name",r.getRule_name());
         contentValues.put("rule_number", r.getRule_number());
         contentValues.put("rule_keyword", r.getRule_keyword());
-        contentValues.put("folder_id", r.getFolder_id());
+        contentValues.put("id_folder", r.getFolder_id());
 
         return db.insert("rule", null, contentValues);
     }

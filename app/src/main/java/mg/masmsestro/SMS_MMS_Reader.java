@@ -4,6 +4,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import android.content.Context;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by magda on 2017-04-25.
@@ -61,6 +63,41 @@ public class SMS_MMS_Reader {
                    // Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
                    if (conv_id != -1) {
+List <Rule>RulesArray=new ArrayList<>();
+RulesArray=dbHelper.getAllRule();
+
+for (Rule r:RulesArray)
+{
+    String keyword=r.getRule_keyword();
+            String phone=r.getRule_number();
+                    int folder_id=r.getFolder_id();
+
+    if ((phone.isEmpty())&&(keyword.isEmpty()))
+    {
+        //do nothing
+    }
+
+
+    //compare convrsaton with keyword
+    if ((phone.isEmpty())&&(!keyword.isEmpty()))
+    {
+
+    }
+
+    //compare conversation with phone
+    if ((!phone.isEmpty())&&(keyword.isEmpty()))
+    {
+
+    }
+
+    //compare conversation with keyword and phone
+    if ((!phone.isEmpty())&&(!keyword.isEmpty()))
+    {
+
+    }
+
+}
+
                        ConvRefFolder ref = new ConvRefFolder();
                        ref.setId_folder(dbHelper.getFolderByName("Incoming"));
                        ref.setId_Conv((int) conv_id);
@@ -119,7 +156,8 @@ public class SMS_MMS_Reader {
                                long sms_id = dbHelper.insertSMS(sms);
                                Log.e("MaSMSestro", "insertedSMS=" + sms.getThread_id());
 
-                               if (thread_id_ret==-1) {
+                               if ((thread_id_ret==-1)&&(sms.getType()==1))
+                               {
                                    thread_id_ret = sms.getThread_id();
                                }
                            }

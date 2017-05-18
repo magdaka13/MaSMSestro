@@ -56,6 +56,7 @@ class RuleDetailsActivity extends AppCompatActivity {
 
         Log.e("MaSMSestro", "inside Rule Details activity;rule_id="+rule_id);
 
+        //edit Rule
         if (!rule_id.isEmpty()) {
             dbHelper = new DBHelper(getApplicationContext());
             r = dbHelper.getRuleById(Integer.parseInt(rule_id));
@@ -79,7 +80,8 @@ class RuleDetailsActivity extends AppCompatActivity {
 
             int sel=-1;
             for (int i=0;i<FolderList.size();i++) {
-            if (FolderList.get(i).equals(dbHelper.getFolderById(r.getFolder_id())))
+                Log.e("MaSMSestro","FolderList="+FolderList.get(i)+" FolderFromRule="+dbHelper.getFolderById(r.getFolder_id()).getName());
+            if (FolderList.get(i).equals(dbHelper.getFolderById(r.getFolder_id()).getName()))
                 {
                     sel=i;
                 }
@@ -101,6 +103,7 @@ class RuleDetailsActivity extends AppCompatActivity {
                                             updated_rule.setRule_keyword(rule_keyword.getText().toString());
                                             updated_rule.setFolder_id(dbHelper.getFolderByName(String.valueOf(s.getSelectedItem())));
                                             dbHelper.updateRule(updated_rule);
+                                            dbHelper.close();
 
                                             Intent intent = new Intent(getApplicationContext(), RuleActivity.class);
                                             startActivity(intent);
@@ -108,7 +111,73 @@ class RuleDetailsActivity extends AppCompatActivity {
                                         }
                                     });
 
-                    dbHelper.close();
+            Button cancel=(Button) findViewById(R.id.btn_Cancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getApplicationContext(), RuleActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+
+
         }
-    }
+        else //new sms
+        {
+            final EditText rule_name = (EditText) findViewById(R.id.rule_name);
+            rule_name.setText(r.getRule_name());
+
+            final EditText rule_phone = (EditText) findViewById(R.id.RulePhone);
+            rule_phone.setText(r.getRule_number());
+
+            final EditText rule_keyword = (EditText) findViewById(R.id.RuleKeyword);
+            rule_keyword.setText(r.getRule_keyword());
+
+            final Spinner s = (Spinner) findViewById(R.id.folderlist_rule);
+            dbHelper = new DBHelper(getApplicationContext());
+            FolderList = dbHelper.getAllFoldersNames();
+            dbHelper.close();
+
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
+            dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            s.setAdapter(dataAdapter);
+
+            Button save = (Button) findViewById(R.id.btn_Save);
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    dbHelper = new DBHelper(getApplicationContext());
+                    Rule new_rule = new Rule();
+                    new_rule.setRule_name(rule_name.getText().toString());
+                    new_rule.setRule_number(String.valueOf(rule_phone.getText()));
+                    new_rule.setRule_keyword(rule_keyword.getText().toString());
+                    new_rule.setFolder_id(dbHelper.getFolderByName(String.valueOf(s.getSelectedItem())));
+                    dbHelper.insertRule(new_rule);
+                    dbHelper.close();
+
+                    Intent intent = new Intent(getApplicationContext(), RuleActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+
+            Button cancel=(Button) findViewById(R.id.btn_Cancel);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    Intent intent = new Intent(getApplicationContext(), RuleActivity.class);
+                    startActivity(intent);
+
+                }
+            });
+
+
+
+            }
+        }
+
 }

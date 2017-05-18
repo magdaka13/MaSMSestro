@@ -59,7 +59,7 @@
         android:layout_marginTop="100dp"
         android:background="@color/colorPrimaryDark"
         android:ems="10"
-        android:inputType="phone"
+        android:inputType="textShortMessage"
         android:textColor="@color/colorPrimary" />
 
 

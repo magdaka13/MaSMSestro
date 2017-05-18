@@ -27,6 +27,7 @@
         android:autoText="false"
         android:elegantTextHeight="true"
         android:gravity="top"
+        android:inputType="textCapSentences|textAutoCorrect|textAutoComplete|textShortMessage|textLongMessage"
         android:textAlignment="gravity"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
         tools:layout_editor_absoluteX="8dp"

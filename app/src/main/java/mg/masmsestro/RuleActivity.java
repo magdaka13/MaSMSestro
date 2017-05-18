@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -99,11 +100,18 @@ private DBHelper dbHelper;
 
         if (id==R.id.action_new_rule)
         {
+
+                    Intent intent = new Intent(getApplicationContext(), RuleDetailsActivity.class);
+                    startActivity(intent);
+
             return true;
         }
 
         if (id==R.id.action_delete_rule)
         {
+            Intent intent = new Intent(getApplicationContext(), RuleDeleteActivity.class);
+            startActivity(intent);
+
             return true;
         }
 
