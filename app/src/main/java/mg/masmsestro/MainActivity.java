@@ -234,14 +234,14 @@ private Context context=this;
 
         return true;
         }
-
+/*
         if (id == R.id.action_DB) {
 
             Intent dbmanager = new Intent(getApplicationContext(),AndroidDatabaseManager.class);
             startActivity(dbmanager);
         return true;
         }
-
+*/
             return super.onOptionsItemSelected(item);
     }
 

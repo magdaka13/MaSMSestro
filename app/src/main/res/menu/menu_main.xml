@@ -44,11 +44,11 @@
         android:orderInCategory="105"
         android:title="@string/user_settings"
         app:showAsAction="never" />
-
+<!--
     <item
         android:id="@+id/action_DB"
         android:orderInCategory="105"
         android:title="Manage DB"
         app:showAsAction="never" />
-
+-->
 </menu>
