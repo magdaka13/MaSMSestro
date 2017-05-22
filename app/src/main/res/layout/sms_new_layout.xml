@@ -29,10 +29,12 @@
 
         <Button
             android:id="@+id/SMSsend"
+            style="@style/Widget.AppCompat.Button.Small"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:background="@android:drawable/ic_menu_send" />
+            android:background="@android:drawable/ic_menu_send"
+            tools:ignore="RtlHardcoded" />
     </android.support.design.widget.AppBarLayout>
 
     <include
