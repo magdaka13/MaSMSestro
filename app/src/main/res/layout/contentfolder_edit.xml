@@ -12,7 +12,7 @@
         android:id="@+id/SMSFolderListEdit"
         style="@style/Widget.AppCompat.ListView.Menu"
         android:layout_width="match_parent"
-        android:layout_height="551dp"
+        android:layout_height="match_parent"
         android:choiceMode="singleChoice"
         android:scrollbars="horizontal"
         android:visibility="visible"

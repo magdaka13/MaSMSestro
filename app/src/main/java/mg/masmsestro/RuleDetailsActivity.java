@@ -19,7 +19,7 @@ import java.util.List;
  * Created by magda on 2017-05-17.
  */
 
-class RuleDetailsActivity extends AppCompatActivity {
+public class RuleDetailsActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private List<String> FolderList=new ArrayList<>();
     private String rule_id;

@@ -42,8 +42,8 @@
                 android:layout_above="@+id/chkboxSelectAll"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_launcher"
-                android:contentDescription="@string/delete" />
+                android:contentDescription="@string/delete"
+                android:src="@android:drawable/ic_menu_delete" />
 
         </RelativeLayout>
 

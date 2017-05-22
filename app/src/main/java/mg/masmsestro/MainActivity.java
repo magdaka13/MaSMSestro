@@ -1,9 +1,9 @@
 package mg.masmsestro;
 
+import android.annotation.TargetApi;
 import android.app.Dialog;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,17 +17,17 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import android.widget.ProgressBar;
+import android.os.Handler;
+import android.os.AsyncTask;
 
-//import mg.masmsestro.DBHelper;
-
-
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_MESSAGE = "";
     private List<String> FolderList = new ArrayList<>();
@@ -36,7 +36,12 @@ public class MainActivity extends AppCompatActivity {
 private Dialog d;
     private ArrayAdapter a;
 private Context context=this;
+    private ProgressBar mProgress;
+    private int mProgressStatus = 0;
+    private Handler mHandler=new Handler();
+    private TextView mProgressTitle;
 
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +51,10 @@ private Context context=this;
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mProgress = (ProgressBar) findViewById(R.id.progressBar);
+        mProgressTitle = (TextView) findViewById(R.id.progressBarTitle);
+
 
         dbHelper = new DBHelper(getApplicationContext());
 
@@ -77,9 +86,12 @@ private Context context=this;
 //second - read all conversations and sms
         if (dbHelper.numberOfRowsSMS()==0)
         {
-            SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
-            sms_reader.read_SMS_MMS(dbHelper,getApplicationContext());
+
+            new ReadSMS_Async().execute(10);
+
+
         }
+
 
         //now - let's handle clicking on folders list
         SMSFolders.setOnItemClickListener(new OnItemClickListener() {
@@ -190,8 +202,9 @@ private Context context=this;
         if (id == R.id.action_refresh)
         {
             dbHelper.deleteAllConversation();
-            SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
-            sms_reader.read_SMS_MMS(dbHelper,getApplicationContext());
+            new ReadSMS_Async().execute(10);
+
+
         }
 
         if (id == R.id.action_search) {
@@ -251,5 +264,31 @@ private Context context=this;
     {
         dbHelper.close();
         super.onDestroy();
+    }
+
+
+    class ReadSMS_Async extends AsyncTask<Integer, Integer, String> {
+        @Override
+        protected String doInBackground(Integer... params) {
+            SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
+            sms_reader.read_SMS_MMS(dbHelper,getApplicationContext());
+            return "Task Completed.";
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            mProgress.setVisibility(View.GONE);
+            mProgressTitle.setText("");
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mProgress.setVisibility(View.VISIBLE);
+            mProgressTitle.setText("Loading Conversations...");
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            Log.e("MaSMSestro","task running");
+        }
     }
 }

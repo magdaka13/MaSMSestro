@@ -758,6 +758,7 @@ select_table.setBackgroundColor(Color.BLUE);
 
     }
     //displays alert dialog from which use can update or delete a row
+    @SuppressWarnings("ResourceType")
     public void updateDeletePopup(int row)
     {
         Cursor c2=indexInfo.maincursor;

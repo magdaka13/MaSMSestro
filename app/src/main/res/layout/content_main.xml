@@ -12,8 +12,8 @@
     <ListView
         android:id="@+id/SMSFolderList"
         style="@style/Widget.AppCompat.ListView.Menu"
-        android:layout_width="368dp"
-        android:layout_height="551dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:choiceMode="none"
         android:scrollbars="horizontal"
         android:textFilterEnabled="true"
