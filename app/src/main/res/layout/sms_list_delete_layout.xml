@@ -44,8 +44,7 @@
             android:layout_gravity="right"
             android:layout_weight="1"
             android:contentDescription="@string/delete"
-            android:src="@mipmap/ic_launcher"
-            app:srcCompat="@android:drawable/ic_menu_delete" />
+            android:src="@android:drawable/ic_menu_delete" />
 
     </android.support.design.widget.AppBarLayout>
 
