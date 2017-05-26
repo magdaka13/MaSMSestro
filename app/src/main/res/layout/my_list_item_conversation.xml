@@ -9,8 +9,6 @@
 
         android:background="@color/colorListItem"
         android:checked="false"
-        android:drawableLeft="@mipmap/ic_launcher"
-        android:drawableStart="@mipmap/ic_launcher"
         android:elegantTextHeight="true"
 
 

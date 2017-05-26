@@ -47,7 +47,6 @@ private Context context=this;
         super.onCreate(savedInstanceState);
 
         //context.deleteDatabase("SMSDB.db");
-
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -55,6 +54,7 @@ private Context context=this;
         mProgress = (ProgressBar) findViewById(R.id.progressBar);
         mProgressTitle = (TextView) findViewById(R.id.progressBarTitle);
 
+        mProgress.setVisibility(View.VISIBLE);
 
         dbHelper = new DBHelper(getApplicationContext());
 
@@ -81,6 +81,7 @@ private Context context=this;
                 R.layout.my_list_item1, FolderList
         );
         SMSFolders.setAdapter(a);
+        mProgress.setVisibility(View.GONE);
 
        // dbHelper.deleteAllConversation();
 //second - read all conversations and sms

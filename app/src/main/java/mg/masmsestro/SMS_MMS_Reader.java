@@ -189,16 +189,30 @@ public class SMS_MMS_Reader {
                         if (cursor.moveToFirst()) {
                             for (int j = 0; j < cursor.getCount(); j++) {
                                 SMS sms = new SMS();
-                                sms.setContent(cursor.getString(cursor.getColumnIndexOrThrow("body")).toString());
-                                sms.setTel_no(cursor.getString(cursor.getColumnIndexOrThrow("address")).toString());
-                                sms.setDate_received(cursor.getLong(cursor.getColumnIndexOrThrow("date")));
-                                sms.setDate_sent(cursor.getLong(cursor.getColumnIndexOrThrow("date_sent")));
-                                sms.setRead((cursor.getString(cursor.getColumnIndexOrThrow("read"))));
-                                sms.setSeen(cursor.getString(cursor.getColumnIndexOrThrow("seen")));
-                                sms.setPerson(cursor.getString(cursor.getColumnIndexOrThrow("person")));
-                                sms.setThread_id(cursor.getInt(cursor.getColumnIndexOrThrow("thread_id")));
-                                sms.setType(cursor.getInt(cursor.getColumnIndexOrThrow("type")));
 
+                                try {
+                                    sms.setContent(cursor.getString(cursor.getColumnIndex("body")));
+                                    sms.setTel_no(cursor.getString(cursor.getColumnIndex("address")));
+                                    sms.setDate_received(cursor.getLong(cursor.getColumnIndex("date")));
+                                    sms.setDate_sent(cursor.getLong(cursor.getColumnIndex("date_sent")));
+                                    sms.setRead((cursor.getString(cursor.getColumnIndex("read"))));
+                                    sms.setSeen(cursor.getString(cursor.getColumnIndex("seen")));
+                                    sms.setPerson(cursor.getString(cursor.getColumnIndex("person")));
+                                    sms.setThread_id(cursor.getInt(cursor.getColumnIndex("thread_id")));
+                                    sms.setType(cursor.getInt(cursor.getColumnIndex("type")));
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.e("MaSMSestro","Exception occured while retrieving sms:"+e);
+                                    sms.setTel_no(" ");
+                                    sms.setContent(" ");
+
+                                }
+                                finally {
+                                    sms.setTel_no(" ");
+                                    sms.setContent(" ");
+
+                                }
 
                                 //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
 /*

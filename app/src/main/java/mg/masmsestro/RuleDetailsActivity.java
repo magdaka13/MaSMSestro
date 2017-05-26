@@ -124,7 +124,7 @@ public class RuleDetailsActivity extends AppCompatActivity {
 
 
         }
-        else //new sms
+        else //new rule
         {
             final EditText rule_name = (EditText) findViewById(R.id.rule_name);
             rule_name.setText(r.getRule_name());

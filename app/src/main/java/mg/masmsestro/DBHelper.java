@@ -303,6 +303,14 @@ public long insertConversation(Conversation s) {
 
     }
 
+    public int markConversationAsRead(int conv_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("read",1 );
+        return db.update("conversation", contentValues, "id_conv = ? ", new String[]{Integer.toString(conv_id)});
+
+    }
+
 /*Conversation table - end*/
 
 /* SMS table */
@@ -423,6 +431,28 @@ return SMS_List;
         return SMS_List;
     }
 
+
+    public SMS getSMSByBodyThread(String sms_keyword,int thread_id)
+    {
+        SMS s=new SMS();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String sql_string="select sms_id from sms where content='"+sms_keyword+"' and thread_id="+thread_id+"";
+
+        //     Log.e("MaSMSestro","getSMS - sql="+sql_string);
+
+        Cursor res = db.rawQuery(sql_string,null);
+        res.moveToFirst();
+
+        while (!res.isAfterLast()) {
+            s.setSms_id(res.getInt(res.getColumnIndex("sms_id")));
+            res.moveToNext();
+        }
+
+        res.close();
+        return s;
+
+    }
 
     public int numberOfRowsSMS() {
         SQLiteDatabase db = this.getReadableDatabase();

@@ -211,6 +211,18 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
                 return true;
             }
+
+            if (id==R.id.action_create_rule)
+            {
+                Intent intent = new Intent(getApplicationContext(), RuleDetailsActivity.class);
+                Bundle extras = new Bundle();
+                extras.putString("RULE_ID_STRING", "");
+                intent.putExtras(extras);
+                startActivity(intent);
+
+                return true;
+            }
+
         }
 
         return super.onOptionsItemSelected(item);

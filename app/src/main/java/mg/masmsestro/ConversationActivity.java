@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.content.Context;
+import android.database.Cursor;
 
 import java.util.List;
 
@@ -85,6 +86,7 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
                     R.layout.my_list_item_conversation, ConversationList_string
             );
             ConversationItems.setAdapter(a);
+
 
             //now - let's handle clicking on conversation list
             ConversationItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {

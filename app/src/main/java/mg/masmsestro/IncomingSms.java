@@ -70,7 +70,7 @@ private int thread_id;
                     Intent resultIntent = new Intent(context, SMSActivity.class);
                     Bundle extras2=new Bundle();
                     extras2.putString("THREAD_ID_STRING", String.valueOf(thread_id));
-                    extras2.putString("SMS_KEYWORD_STRING", "");
+                    extras2.putString("SMS_KEYWORD_STRING", message);
                     resultIntent.putExtras(extras2);
 
 // The stack builder object will contain an artificial back stack for the
@@ -98,7 +98,7 @@ private int thread_id;
                     MarkAsRead.setAction(AppConstant.MarkAsRead);
                     Bundle extras=new Bundle();
                     extras.putString("THREAD_ID_STRING", String.valueOf(thread_id));
-                    extras.putString("SMS_KEYWORD_STRING", "");
+                    extras.putString("SMS_KEYWORD_STRING", message);
                     MarkAsRead.putExtras(extras);
                     PendingIntent pendingIntentYes = PendingIntent.getBroadcast(context, 12345, MarkAsRead, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.addAction(R.mipmap.ic_launcher, "Mark as read", pendingIntentYes);
