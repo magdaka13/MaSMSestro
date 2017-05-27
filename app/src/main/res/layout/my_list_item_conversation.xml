@@ -9,9 +9,6 @@
 
         android:background="@color/colorListItem"
         android:checked="false"
-        android:elegantTextHeight="true"
-
-
         android:maxLines="2"
         android:textColor="@color/colorWhite"
         android:textSize="20sp"

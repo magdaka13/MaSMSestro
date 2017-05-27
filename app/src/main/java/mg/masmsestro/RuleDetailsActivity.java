@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +20,6 @@ import java.util.List;
 
 public class RuleDetailsActivity extends AppCompatActivity {
     private DBHelper dbHelper;
-    private List<String> FolderList=new ArrayList<>();
     private String rule_id;
 
     @Override
@@ -51,12 +49,17 @@ public class RuleDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarRule);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
 
         Log.e("MaSMSestro", "inside Rule Details activity;rule_id="+rule_id);
 
         //edit Rule
+        List<String> folderList;
         if (!rule_id.isEmpty()) {
             dbHelper = new DBHelper(getApplicationContext());
             r = dbHelper.getRuleById(Integer.parseInt(rule_id));
@@ -72,16 +75,16 @@ public class RuleDetailsActivity extends AppCompatActivity {
             rule_keyword.setText(r.getRule_keyword());
 
             final Spinner s = (Spinner) findViewById(R.id.folderlist_rule);
-            FolderList = dbHelper.getAllFoldersNames();
+            folderList = dbHelper.getAllFoldersNames();
 
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, folderList);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             s.setAdapter(dataAdapter);
 
             int sel=-1;
-            for (int i=0;i<FolderList.size();i++) {
-                Log.e("MaSMSestro","FolderList="+FolderList.get(i)+" FolderFromRule="+dbHelper.getFolderById(r.getFolder_id()).getName());
-            if (FolderList.get(i).equals(dbHelper.getFolderById(r.getFolder_id()).getName()))
+            for (int i = 0; i< folderList.size(); i++) {
+                Log.e("MaSMSestro","FolderList="+ folderList.get(i)+" FolderFromRule="+dbHelper.getFolderById(r.getFolder_id()).getName());
+            if (folderList.get(i).equals(dbHelper.getFolderById(r.getFolder_id()).getName()))
                 {
                     sel=i;
                 }
@@ -137,10 +140,10 @@ public class RuleDetailsActivity extends AppCompatActivity {
 
             final Spinner s = (Spinner) findViewById(R.id.folderlist_rule);
             dbHelper = new DBHelper(getApplicationContext());
-            FolderList = dbHelper.getAllFoldersNames();
+            folderList = dbHelper.getAllFoldersNames();
             dbHelper.close();
 
-            ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
+            ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, folderList);
             dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             s.setAdapter(dataAdapter);
 

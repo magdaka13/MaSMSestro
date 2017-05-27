@@ -24,21 +24,17 @@ import android.content.Context;
 import java.util.ArrayList;
 import java.util.List;
 import android.widget.ProgressBar;
-import android.os.Handler;
 import android.os.AsyncTask;
 
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class MainActivity extends AppCompatActivity {
-    public static final String EXTRA_MESSAGE = "";
     private List<String> FolderList = new ArrayList<>();
     private DBHelper dbHelper;
     private ListView SMSFolders;
 private Dialog d;
     private ArrayAdapter a;
-private Context context=this;
+private final Context context=this;
     private ProgressBar mProgress;
-    private int mProgressStatus = 0;
-    private Handler mHandler=new Handler();
     private TextView mProgressTitle;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -248,7 +244,8 @@ private Context context=this;
 
         return true;
         }
-/*
+
+ /*
         if (id == R.id.action_DB) {
 
             Intent dbmanager = new Intent(getApplicationContext(),AndroidDatabaseManager.class);
@@ -268,7 +265,7 @@ private Context context=this;
     }
 
 
-    class ReadSMS_Async extends AsyncTask<Integer, Integer, String> {
+    private class ReadSMS_Async extends AsyncTask<Integer, Integer, String> {
         @Override
         protected String doInBackground(Integer... params) {
             SMS_MMS_Reader sms_reader = new SMS_MMS_Reader();
@@ -284,7 +281,7 @@ private Context context=this;
         @Override
         protected void onPreExecute() {
             mProgress.setVisibility(View.VISIBLE);
-            mProgressTitle.setText("Loading Conversations...");
+            mProgressTitle.setText(R.string.loading);
         }
 
         @Override

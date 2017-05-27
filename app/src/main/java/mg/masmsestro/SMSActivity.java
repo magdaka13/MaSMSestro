@@ -16,20 +16,17 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 public class SMSActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
-    private List<String> SMSList_string=new ArrayList<String>();
     private ListView SMSList_view;
 private ArrayAdapter a;
-    private String thread_id,sms_keyword;
-private Dialog d;
-    private Context context=this;
-    private List<String> FolderList;
+    private String thread_id;
+    private Dialog d;
+    private final Context context=this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,14 +40,19 @@ private Dialog d;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
-Bundle ex=intent.getExtras();
+
+        Bundle ex=intent.getExtras();
     thread_id = ex.getString("THREAD_ID_STRING");
-    sms_keyword = ex.getString("SMS_KEYWORD_STRING");
+        String sms_keyword = ex.getString("SMS_KEYWORD_STRING");
 
+        List<String> SMSList_string;
         if (!thread_id.equals("")) {
-            sms_keyword=new String("");
+            sms_keyword = "";
 
             setTitle(" MaSMSestro-> Conversation");
 
@@ -78,9 +80,9 @@ Bundle ex=intent.getExtras();
             });
         }
 
-        if (!sms_keyword.equals(""))
+        if (!(sms_keyword != null && sms_keyword.equals("")))
         {
-            thread_id=new String("");
+            thread_id= "";
 
             setTitle(" MaSMSestro-> Found SMS");
 
@@ -88,6 +90,7 @@ Bundle ex=intent.getExtras();
 
             SMSList_string = dbHelper.getAllSMSByKeyword(sms_keyword);
 
+            dbHelper.close();
 
             SMSList_view = (ListView) findViewById(R.id.SMSList);
             a = new ArrayAdapter<>(
@@ -124,6 +127,7 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        dbHelper = new DBHelper(getApplicationContext());
         if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
             if (id == R.id.action_move_conversation) {
@@ -137,10 +141,10 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
 
                 final Spinner s = (Spinner) d.findViewById(R.id.FolderName);
-                FolderList = dbHelper.getAllFoldersNames();
+                List<String> folderList = dbHelper.getAllFoldersNames();
 
 
-                ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, FolderList);
+                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item, folderList);
                 dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 s.setAdapter(dataAdapter);
 
@@ -225,6 +229,7 @@ if (!getTitle().equals(" MaSMSestro-> Found SMS")) {
 
         }
 
+        dbHelper.close();
         return super.onOptionsItemSelected(item);
     }
 

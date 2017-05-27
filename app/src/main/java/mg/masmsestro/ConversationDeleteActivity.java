@@ -1,10 +1,6 @@
 package mg.masmsestro;
 
-import android.annotation.TargetApi;
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,14 +9,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,15 +21,11 @@ import java.util.List;
 public class ConversationDeleteActivity extends AppCompatActivity {
 
     private List<Conversation> ConversationList;
-    private List<String> ConversationList_string =new ArrayList<>();
+    private final List<String> ConversationList_string =new ArrayList<>();
     private ListView ConversationItems;
-    private final Context context = this;
-private Dialog d;
     private ArrayAdapter a;
-    private List<String> FolderList = new ArrayList<>();
-private DBHelper dbHelper;
-    private int selected;
-private String folder_name;
+    private DBHelper dbHelper;
+    private String folder_name;
     private int i;
     private Boolean checked;
 
@@ -67,8 +56,11 @@ private String folder_name;
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
 
-        // Enable the Up button
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
         for (int i=0;i<ConversationList.size();i++) {
 
@@ -86,7 +78,7 @@ private String folder_name;
 
         if (ConversationList_string.size()>0) {
             ConversationItems = (ListView) findViewById(R.id.ConversationList);
-            a = new ArrayAdapter<String>(
+            a = new ArrayAdapter<>(
                     getApplicationContext(),
                     R.layout.my_list_item_conversation_delete, ConversationList_string
             );
@@ -152,7 +144,7 @@ private String folder_name;
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+//        int id = item.getItemId();
 
         Intent intent = new Intent();
         Bundle extras=new Bundle();
@@ -189,7 +181,7 @@ private String folder_name;
 
         if (ConversationList_string.size()>0) {
             ConversationItems = (ListView) findViewById(R.id.ConversationList);
-            a = new ArrayAdapter<String>(
+            a = new ArrayAdapter<>(
                     getApplicationContext(),
                     R.layout.my_list_item_conversation_delete, ConversationList_string
             );

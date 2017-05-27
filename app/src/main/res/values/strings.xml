@@ -4,7 +4,6 @@
     <string name="action_new_folder">New Folder</string>
     <string name="action_edit_folder">Edit Folder</string>
     <string name="action_delete_folder">Delete Folder</string>
-    <string name="action_settings">User settings</string>
 
     <string name="dialog_title">Delete folder</string>
     <string name="cancel">Cancel</string>
@@ -36,5 +35,9 @@
     <string name="are_you_sure">Are you sure?</string>
     <string name="Contact">Provide contact</string>
     <string name="rule_name">Rule name</string>
+    <string name="refresh">Refresh</string>
+    <string name="new_rule">New Rule</string>
+    <string name="delete_rule">Delete rule</string>
+    <string name="loading">Loading Conversations…</string>
 
 </resources>

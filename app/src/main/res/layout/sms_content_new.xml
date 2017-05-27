@@ -22,10 +22,7 @@
         android:id="@+id/SMSbody"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:layout_below="@+id/SMScontact"
-        android:autoText="false"
-        android:elegantTextHeight="true"
         android:gravity="top"
         android:inputType="textCapSentences|textAutoCorrect|textAutoComplete|textShortMessage|textLongMessage"
         android:textAlignment="gravity"

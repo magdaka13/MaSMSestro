@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="mg.masmsestro">
 
     <uses-permission android:name="android.permission.SEND_SMS" />
@@ -28,7 +27,7 @@
             android:name=".EditFolder"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.MainActivity" />
@@ -37,7 +36,7 @@
             android:name=".DeleteFolder"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.MainActivity" />
@@ -46,18 +45,17 @@
             android:name=".ConversationActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+            >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.MainActivity" />
-
         </activity>
 
         <activity
             android:name=".ConversationMoveActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ConversationActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.ConversationActivity" />
@@ -68,18 +66,17 @@
             android:name=".ConversationDeleteActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ConversationActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.ConversationActivity" />
-
         </activity>
 
         <activity
             android:name=".SMSActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ConversationActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.ConversationActivity" />
@@ -89,7 +86,7 @@
             android:name=".SMSNewActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.MainActivity" />
@@ -100,7 +97,7 @@
             android:name=".SMSDeleteActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".ConversationActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.ConversationActivity" />
@@ -110,7 +107,7 @@
             android:name=".RuleActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.MainActivity" />
@@ -120,7 +117,7 @@
             android:name=".RuleDetailsActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".RuleActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.RuleActivity" />
@@ -130,13 +127,14 @@
             android:name=".RuleDeleteActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".RuleActivity">
+>
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="mg.masmsestro.RuleActivity" />
         </activity>
 
-        <receiver android:name=".IncomingSms">
+        <receiver android:name=".IncomingSms"
+            android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="1000">
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
@@ -150,8 +148,7 @@
 
             </intent-filter>
         </receiver>
-
-        <!--
+ <!--
     <activity
         android:name="mg.masmsestro.AndroidDatabaseManager"
         android:theme="@style/AppTheme.NoActionBar"

@@ -4,8 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
-
 import android.util.Log;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -28,7 +26,9 @@ public class NotificationReceiver extends BroadcastReceiver {
             sms_keyword = ex.getString("SMS_KEYWORD_STRING");
         }
         catch(Exception e)
-        {}
+        {
+            Log.e("MaSMSestro","cannot retreive SMS body,thread_id");
+        }
 
         DBHelper dbHelper=new DBHelper(context);
         if (MarkAsRead.equals(action)) {

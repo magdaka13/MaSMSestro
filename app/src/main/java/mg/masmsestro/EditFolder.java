@@ -30,7 +30,11 @@ public class EditFolder extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolder);
         setSupportActionBar(toolbar);
 ActionBar ab=getSupportActionBar();
-        ab.setDefaultDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
         dbHelper = new DBHelper(getApplicationContext());
         FolderList = dbHelper.getAllFoldersNames();

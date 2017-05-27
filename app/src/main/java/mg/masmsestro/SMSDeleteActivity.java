@@ -1,7 +1,5 @@
 package mg.masmsestro;
 
-import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -12,12 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.Spinner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +22,11 @@ import java.util.List;
 public class SMSDeleteActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
-    private List<String> SMSList_string=new ArrayList<String>();
-    private List<SMS> SMSList_obj=new ArrayList<SMS>();
+    private List<SMS> SMSList_obj= new ArrayList<>();
     private ListView SMSList_view;
-    private ArrayAdapter a;
-    private String thread_id,sms_keyword;
- private Boolean checked;
-    int i;
+    private String thread_id;
+    private Boolean checked;
+    private int i;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +40,16 @@ public class SMSDeleteActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarSMS);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle ex=intent.getExtras();
         thread_id = ex.getString("THREAD_ID_STRING");
 
-        if (!thread_id.equals("")) {
-            sms_keyword=new String("");
+        if (!(thread_id != null && thread_id.equals(""))) {
+            //String sms_keyword = "";
 
             setTitle(" MaSMSestro-> SMS");
 
@@ -60,12 +57,12 @@ public class SMSDeleteActivity extends AppCompatActivity {
 
             dbHelper = new DBHelper(getApplicationContext());
 
-            SMSList_string = dbHelper.getAllSMSByThread(Integer.valueOf(thread_id));
+            List<String> SMSList_string = dbHelper.getAllSMSByThread(Integer.valueOf(thread_id));
             SMSList_obj = dbHelper.getAllSMSByThread_SMS(Integer.valueOf(thread_id));
 
 
             SMSList_view = (ListView) findViewById(R.id.SMSList);
-            a = new ArrayAdapter<>(
+            ArrayAdapter a = new ArrayAdapter<>(
                     getApplicationContext(),
                     R.layout.my_listitemdelete, SMSList_string
             );
@@ -137,7 +134,7 @@ if (c!=null) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        //int id = item.getItemId();
 
         Intent intent = new Intent(getApplicationContext(), SMSActivity.class);
         Bundle extras = new Bundle();

@@ -1,7 +1,5 @@
 package mg.masmsestro;
 
-import java.util.Date;
-
 /**
  * Created by magda on 2017-03-19.
  */

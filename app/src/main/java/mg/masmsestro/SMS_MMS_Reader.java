@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,9 +28,9 @@ public class SMS_MMS_Reader {
 
 
         // Read the sms data and store it in the list
-        if (c.moveToFirst()) {
+        if (c != null && c.moveToFirst()) {
             for (int i = 0; i < c.getCount(); i++) {
-                Integer id = c.getInt(c.getColumnIndex("_id"));
+//                Integer id = c.getInt(c.getColumnIndex("_id"));
                 String string = c.getString(c.getColumnIndex("ct_t"));
 
                 String recipient_list = c.getString(c.getColumnIndex("address"));
@@ -65,7 +64,7 @@ public class SMS_MMS_Reader {
                         // Log.e("MaSMSestro", "insertedConversation=" + conv_id);
 
                         if (conv_id != -1) {
-                            List<Rule> RulesArray = new ArrayList<>();
+                            List<Rule> RulesArray;
                             RulesArray = dbHelper.getAllRule();
                             Pattern pattern;
                             Boolean found_phone, found_keyword;
@@ -102,7 +101,7 @@ public class SMS_MMS_Reader {
                                         found_keyword = true;
                                     }
 
-                                    if ((found_phone == true) && (found_keyword == true)) {
+                                    if ((found_phone) && (found_keyword)) {
                                         folder_id = r.getFolder_id();
                                         break;
                                     }
@@ -120,7 +119,7 @@ public class SMS_MMS_Reader {
                                         found_phone = true;
                                     }
 
-                                    if (found_phone == true) {
+                                    if (found_phone) {
                                         folder_id = r.getFolder_id();
                                         break;
                                     }
@@ -140,7 +139,7 @@ public class SMS_MMS_Reader {
                                         found_keyword = true;
                                     }
 
-                                    if (found_keyword == true) {
+                                    if (found_keyword) {
                                         folder_id = r.getFolder_id();
                                         Log.e("MaSMSestro","keyword found folder_id="+folder_id);
                                         break;
@@ -160,7 +159,7 @@ public class SMS_MMS_Reader {
                             ref.setId_Conv((int) conv_id);
 
                             Folder f = dbHelper.getFolderById(ref.getId_folder());
-                            String name_f = "";
+                            String name_f;
                             if (f != null) {
                                 name_f = f.getName();
                             } else {
@@ -186,11 +185,11 @@ public class SMS_MMS_Reader {
                         Uri uri1 = Uri.parse("content://sms");
                         Cursor cursor = context.getContentResolver().query(uri1, null, selection, null, null);
 
-                        if (cursor.moveToFirst()) {
+                        if (cursor != null && cursor.moveToFirst()) {
                             for (int j = 0; j < cursor.getCount(); j++) {
                                 SMS sms = new SMS();
 
-                                try {
+
                                     sms.setContent(cursor.getString(cursor.getColumnIndex("body")));
                                     sms.setTel_no(cursor.getString(cursor.getColumnIndex("address")));
                                     sms.setDate_received(cursor.getLong(cursor.getColumnIndex("date")));
@@ -200,19 +199,6 @@ public class SMS_MMS_Reader {
                                     sms.setPerson(cursor.getString(cursor.getColumnIndex("person")));
                                     sms.setThread_id(cursor.getInt(cursor.getColumnIndex("thread_id")));
                                     sms.setType(cursor.getInt(cursor.getColumnIndex("type")));
-                                }
-                                catch (Exception e)
-                                {
-                                    Log.e("MaSMSestro","Exception occured while retrieving sms:"+e);
-                                    sms.setTel_no(" ");
-                                    sms.setContent(" ");
-
-                                }
-                                finally {
-                                    sms.setTel_no(" ");
-                                    sms.setContent(" ");
-
-                                }
 
                                 //                      Log.e("MaSMSestro", "sms: tel=" + sms.getTel_no() + "(" + sms.getPerson() + ");body=" + sms.getContent() + ";date_received=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_received())) + ";date_sent=" + new SimpleDateFormat("MM/dd/yyyy H:m:s").format(new Date(sms.getDate_sent())) + ";read=" + sms.getRead() + ";seen=" + sms.getSeen() + ";thread=" + sms.getThread_id()+"type="+sms.getType());
 /*
@@ -224,12 +210,12 @@ public class SMS_MMS_Reader {
 */
                                 if (dbHelper.getSMS(sms) == null) {
                                     //                              Log.e("MaSMSestro", "sms doesnt exist");
-                                    long sms_id = dbHelper.insertSMS(sms);
+                                    dbHelper.insertSMS(sms);
                                     Log.e("MaSMSestro", "insertedSMS=" + sms.getThread_id());
 
                                     if (sms.getType() == 1)
                                     {
-                                    List<Rule> RulesArray = new ArrayList<>();
+                                    List<Rule> RulesArray;
                                     RulesArray = dbHelper.getAllRule();
                                     Pattern pattern;
                                     Boolean found_phone, found_keyword;
@@ -265,7 +251,7 @@ public class SMS_MMS_Reader {
                                                 found_keyword = true;
                                             }
 
-                                            if ((found_phone == true) && (found_keyword == true)) {
+                                            if ((found_phone) && (found_keyword)) {
                                                 folder_id = r.getFolder_id();
                                                 break;
                                             }
@@ -283,7 +269,7 @@ public class SMS_MMS_Reader {
                                                 found_phone = true;
                                             }
 
-                                            if (found_phone == true) {
+                                            if (found_phone) {
                                                 folder_id = r.getFolder_id();
                                                 break;
                                             }
@@ -305,7 +291,7 @@ public class SMS_MMS_Reader {
                                                 Log.e("MaSMSestro", "found keyword:" + keyword);
                                             }
 
-                                            if (found_keyword == true) {
+                                            if (found_keyword) {
                                                 folder_id = r.getFolder_id();
                                                 Log.e("MaSMSestro", "keyword found, folder_id=" + folder_id);
                                                 break;
@@ -322,7 +308,7 @@ public class SMS_MMS_Reader {
                                         ref.setId_Conv(dbHelper.getConversationbyThreadId(sms.getThread_id()).getConv_id());
 
                                         Folder f = dbHelper.getFolderById(ref.getId_folder());
-                                        String name_f = "";
+                                        String name_f;
                                         if (f != null) {
                                             name_f = f.getName();
                                         } else {

@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -18,7 +17,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.content.Context;
-import android.database.Cursor;
 
 import java.util.List;
 
@@ -28,11 +26,8 @@ import java.util.ArrayList;
 public class ConversationActivity extends AppCompatActivity {
 
     private List<Conversation> ConversationList;
-    private List<String> ConversationList_string =new ArrayList<>();
-    private ListView ConversationItems;
-    public static final String THREAD_ID_STRING = "";
-    public static final String SMS_KEYWORD_STRING = "";
-    public static String folder_name = "";
+    private final List<String> ConversationList_string =new ArrayList<>();
+    private static String folder_name = "";
     private final Context context = this;
     private Dialog d;
     private ArrayAdapter a;
@@ -60,7 +55,10 @@ public class ConversationActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarConv);
         setSupportActionBar(toolbar);
         ActionBar ab=getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+if (ab != null)
+{
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
 
         DBHelper dbHelper=new DBHelper(getApplicationContext());
         ConversationList=dbHelper.getAllConversationbyFolderName(folder_name);
@@ -80,16 +78,16 @@ Log.e("MaSMSestro","Retreived ConversationList size="+ConversationList.size());
         }
 
         if (ConversationList_string.size()>0) {
-            ConversationItems = (ListView) findViewById(R.id.ConversationList);
-            a = new ArrayAdapter<String>(
+            ListView conversationItems = (ListView) findViewById(R.id.ConversationList);
+            a = new ArrayAdapter<>(
                     getApplicationContext(),
                     R.layout.my_list_item_conversation, ConversationList_string
             );
-            ConversationItems.setAdapter(a);
+            conversationItems.setAdapter(a);
 
 
             //now - let's handle clicking on conversation list
-            ConversationItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            conversationItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
 

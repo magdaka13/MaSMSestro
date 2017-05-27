@@ -8,7 +8,6 @@
 
         android:background="@color/colorListItem"
         android:checked="false"
-        android:elegantTextHeight="true"
         android:ellipsize="start"
         android:textColor="@color/colorWhite"
         android:textSize="20sp" />

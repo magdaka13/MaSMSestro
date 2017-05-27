@@ -1,11 +1,6 @@
 package mg.masmsestro;
 
 import android.support.v7.app.AppCompatActivity;
-
-/**
- * Created by magda on 2017-05-18.
- */
-
 import android.os.Bundle;
 import android.content.Intent;
 import android.support.v7.widget.Toolbar;
@@ -28,9 +23,8 @@ public class RuleDeleteActivity extends AppCompatActivity {
 
     private DBHelper dbHelper;
 private List<Rule>RuleList_obj=new ArrayList<>();
-    private List<String>RuleList_string=new ArrayList<>();
+    private final List<String>RuleList_string=new ArrayList<>();
 private ListView RuleList_view;
-    private ArrayAdapter<String> a;
     private Boolean checked;
 
 
@@ -39,7 +33,7 @@ private ListView RuleList_view;
 
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
+        //Intent intent = getIntent();
         setContentView(R.layout.activity_rule_delete);
         setTitle(" MaSMSestro");
 
@@ -47,7 +41,11 @@ private ListView RuleList_view;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarRule);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
         setTitle(" MaSMSestro-> Delete Rule");
 
@@ -65,7 +63,7 @@ for (Rule r:RuleList_obj)
 
 
         RuleList_view = (ListView) findViewById(R.id.RuleList);
-        a = new ArrayAdapter<>(
+        ArrayAdapter<String> a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_listitemdelete, RuleList_string
         );
@@ -129,7 +127,7 @@ public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        //int id = item.getItemId();
 
         Intent intent = new Intent(getApplicationContext(), RuleActivity.class);
         startActivity(intent);

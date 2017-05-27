@@ -7,10 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-import android.widget.Toast;
-import android.net.Uri;
-import android.database.DatabaseUtils;
-import android.database.Cursor;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.app.PendingIntent;
@@ -27,9 +23,8 @@ public class IncomingSms extends BroadcastReceiver {
 
     // Get the object of SmsManager
     final SmsManager sms = SmsManager.getDefault();
-    private DBHelper dbHelper;
+    @SuppressWarnings("CanBeFinal")
     private int mId;
-private int thread_id;
 
     public void onReceive(Context context, Intent intent) {
 
@@ -43,32 +38,31 @@ private int thread_id;
 
                 final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
-                for (int i = 0; i < pdusObj.length; i++) {
+                for (Object aPdusObj : pdusObj != null ? pdusObj : new Object[0]) {
 
-                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
+                    SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
                     String phoneNumber = currentMessage.getDisplayOriginatingAddress();
 
-                    String senderNum = phoneNumber;
                     String message = currentMessage.getDisplayMessageBody();
 
-                    dbHelper=new DBHelper(context);
+                    DBHelper dbHelper = new DBHelper(context);
 
-                    SMS_MMS_Reader sms_mms_reader=new SMS_MMS_Reader();
-                    thread_id=sms_mms_reader.read_SMS_MMS(dbHelper,context);
-                    Log.e("Masmsestro","thread_id="+thread_id);
+                    SMS_MMS_Reader sms_mms_reader = new SMS_MMS_Reader();
+                    int thread_id = sms_mms_reader.read_SMS_MMS(dbHelper, context);
+                    Log.e("Masmsestro", "thread_id=" + thread_id);
                     dbHelper.close();
 
-                    String msg=phoneNumber+": "+message;
+                    String msg = phoneNumber + ": " + message;
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(context)
                                     .setSmallIcon(R.mipmap.ic_launcher)
                                     .setContentTitle("MaSMSestro")
                                     .setContentText(msg)
-                            .setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_SOUND);
+                                    .setAutoCancel(true)
+                                    .setDefaults(Notification.DEFAULT_SOUND);
 // Creates an explicit intent for an Activity in your app
                     Intent resultIntent = new Intent(context, SMSActivity.class);
-                    Bundle extras2=new Bundle();
+                    Bundle extras2 = new Bundle();
                     extras2.putString("THREAD_ID_STRING", String.valueOf(thread_id));
                     extras2.putString("SMS_KEYWORD_STRING", message);
                     resultIntent.putExtras(extras2);
@@ -91,12 +85,12 @@ private int thread_id;
                     mBuilder.setContentIntent(resultPendingIntent);
                     mBuilder.setStyle(new NotificationCompat.BigTextStyle().bigText(msg));
                     NotificationManager mNotificationManager =
-                            (NotificationManager) context.getSystemService(context.NOTIFICATION_SERVICE);
+                            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 // mId allows you to update the notification later on.
 
                     Intent MarkAsRead = new Intent();
                     MarkAsRead.setAction(AppConstant.MarkAsRead);
-                    Bundle extras=new Bundle();
+                    Bundle extras = new Bundle();
                     extras.putString("THREAD_ID_STRING", String.valueOf(thread_id));
                     extras.putString("SMS_KEYWORD_STRING", message);
                     MarkAsRead.putExtras(extras);
@@ -106,15 +100,15 @@ private int thread_id;
 
                     Intent Delete = new Intent();
                     Delete.setAction(AppConstant.Delete);
-                    Bundle extras1=new Bundle();
+                    Bundle extras1 = new Bundle();
                     extras1.putString("THREAD_ID_STRING", String.valueOf(thread_id));
                     extras1.putString("SMS_KEYWORD_STRING", "");
                     Delete.putExtras(extras1);
                     PendingIntent pendingIntentYes2 = PendingIntent.getBroadcast(context, 12345, Delete, PendingIntent.FLAG_UPDATE_CURRENT);
                     mBuilder.addAction(R.mipmap.ic_launcher, "Delete", pendingIntentYes2);
 
-                    Notification notification=mBuilder.build();
-                    notification.tickerText=msg;
+                    Notification notification = mBuilder.build();
+                    notification.tickerText = msg;
 
                     mNotificationManager.notify(mId, notification);
 

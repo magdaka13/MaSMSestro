@@ -25,11 +25,9 @@ import static android.view.View.OnClickListener;
 public class DeleteFolder extends AppCompatActivity {
     private final Context context = this;
     private DBHelper dbHelper;
-    private List<String> entries = new ArrayList<>();
-    private String name;
     private Boolean checked;
-    private ListView SMSFolders, DeleteChoiceList;
-    private List<Dialog> dialogs = new ArrayList<>();
+    private ListView SMSFolders;
+    private final List<Dialog> dialogs = new ArrayList<>();
     private int i, j;
     private Folder f;
 
@@ -41,7 +39,11 @@ public class DeleteFolder extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarFolderDelete);
         setSupportActionBar(toolbar);
         ActionBar ab=getSupportActionBar();
-        ab.setDefaultDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
         setTitle(" MaSMSestro-> Delete Folder");
 
@@ -135,7 +137,7 @@ public class DeleteFolder extends AppCompatActivity {
                                     //Toast.makeText(getApplicationContext(), "move all", Toast.LENGTH_LONG).show();
                                     dialogs.get(j).cancel();
 
-                                     List <Conversation> convs=new ArrayList<>();
+                                     List <Conversation> convs;
                                     convs=dbHelper.getAllConversationbyFolderName(f.getName());
 
                                     for (int z=0;z<convs.size();z++) {

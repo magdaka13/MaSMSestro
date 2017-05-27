@@ -11,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -22,17 +21,14 @@ import java.util.List;
  */
 
 public class RuleActivity extends AppCompatActivity {
-private DBHelper dbHelper;
-    private List<Rule> RuleList=new ArrayList<Rule>();
-    private List<String> RuleList_string=new ArrayList<>();
-    private ListView RuleList_view;
-    private ArrayAdapter<String> a;
+    private List<Rule> RuleList= new ArrayList<>();
+    private final List<String> RuleList_string=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
+        //Intent intent = getIntent();
         setContentView(R.layout.activity_rule);
         setTitle(" MaSMSestro->Rules");
 
@@ -40,12 +36,16 @@ private DBHelper dbHelper;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbarRule);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
+        if (ab != null)
+        {
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
+
 
 
         Log.e("MaSMSestro", "inside Rule activity");
 
-        dbHelper = new DBHelper(getApplicationContext());
+        DBHelper dbHelper = new DBHelper(getApplicationContext());
 
 
         RuleList = dbHelper.getAllRule();
@@ -59,14 +59,14 @@ private DBHelper dbHelper;
 
         dbHelper.close();
 
-        RuleList_view = (ListView) findViewById(R.id.RuleList);
-        a = new ArrayAdapter<>(
+        ListView ruleList_view = (ListView) findViewById(R.id.RuleList);
+        ArrayAdapter<String> a = new ArrayAdapter<>(
                 getApplicationContext(),
                 R.layout.my_list_item1, RuleList_string
         );
-        RuleList_view.setAdapter(a);
+        ruleList_view.setAdapter(a);
 
-        RuleList_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ruleList_view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> p, View v, int pos, long id) {
 
